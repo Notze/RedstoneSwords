@@ -1,0 +1,30 @@
+name: Redstone Swords
+main: io.github.notze.redstoneSwords.RedstoneSwords
+version: 0.1
+
+commands:
+  rshelp:
+    description: Display help
+    usage: Usage /rshelp
+    permission: redstoneSwords.rshelp
+    permission-message: You don't have permission <redstoneSwords.rshelp>
+  rs:
+    description: Redstone Sword commands
+    usage: Usage /rs powerup
+    permission: redstoneSwords.rs
+    permission-message: You don't have permission <redstoneSwords.rs>
+  rsclearinventory:
+    description: Clears the Inventory
+    usage: Usage /rsclearinventory
+    permission: redstoneSwords.rsclearinventory
+    permission-message: You don't have permission <redstoneSwords.rsclearinventory>
+  rsstoreinventory:
+    description: Stores the Inventory in a Chest
+    usage: Usage /rsstoreinventory
+    permission: redstoneSwords.rsstoreinventory
+    permission-message: You don't have permission <redstoneSwords.rsstoreinventory>
+  test:
+    description: test
+    usage: Usage /test
+    permission:
+    permission-message:
