@@ -2,11 +2,16 @@ package io.github.notze.mc_redstoneSwords;
 
 import java.util.List;
 import java.util.ArrayList;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -43,6 +48,7 @@ public final class RedstoneSwords extends JavaPlugin implements Listener {
 		ItemMeta im = rsword.getItemMeta();
 		List<String> lores = new ArrayList<String>();
 		lores.add("Redstone: 0");
+		lores.add("Experience: 0");
 		im.setLore(lores);
 		im.setDisplayName("Redstone Sword");
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -69,6 +75,54 @@ public final class RedstoneSwords extends JavaPlugin implements Listener {
 	}
 	
 	@EventHandler
+	public void onPlayerExpChange(PlayerExpChangeEvent e){
+		
+		ItemStack handItem = e.getPlayer().getItemInHand();
+		if(!(handItem.hasItemMeta())) return;
+		ItemMeta im = e.getPlayer().getItemInHand().getItemMeta();
+		if(!(im.hasDisplayName())) return;
+		String itemName = im.getDisplayName();
+		if(!(im.hasLore())) return;
+		List<String> lores = im.getLore();
+		if(itemName.equals("Redstone Sword")){
+			
+			String redstoneString = lores.get(0);
+			String expValueString = lores.get(1).substring(12);
+			lores.clear();
+			
+			int newExpValue = Integer.parseInt(expValueString) + e.getAmount();
+			
+			lores.add(redstoneString);
+			lores.add("Experience: "+newExpValue);
+			im.setLore(lores);
+			
+			im.addEnchant(Enchantment.DAMAGE_ALL, newExpValue/2, true);
+			
+			handItem.setItemMeta(im);
+			
+			e.setAmount(0);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerItemBreak(PlayerItemBreakEvent e){
+		
+		ItemStack handItem = e.getPlayer().getItemInHand();
+		if(!(handItem.hasItemMeta())) return;
+		ItemMeta im = e.getPlayer().getItemInHand().getItemMeta();
+		if(!(im.hasDisplayName())) return;
+		String itemName = im.getDisplayName();
+		if(!(im.hasLore())) return;
+		List<String> lores = im.getLore();
+		if(itemName.equals("Redstone Sword")){
+			
+			String expValueString = lores.get(1).substring(12);
+			
+			e.getPlayer().setTotalExperience(e.getPlayer().getTotalExperience() + Integer.parseInt(expValueString));
+		}
+	}
+	
+	@EventHandler
 	public void onPrepareItemCraft(PrepareItemCraftEvent e){
 		
 		if(e.getInventory().getResult().equals(rswordUpgraded)){
@@ -83,15 +137,20 @@ public final class RedstoneSwords extends JavaPlugin implements Listener {
 			if(output != null){
 				ItemMeta im = output.getItemMeta();
 				List<String> lores = im.getLore();
-				String valueString = lores.get(0).substring(10);
+				String redstoneValueString = lores.get(0).substring(10);
+				String expString = lores.get(1);
+				
 				int upgradeValue = 8; // using redstoneDust
 				if(e.getInventory().getItem(1).getType() == Material.REDSTONE_BLOCK) 
 					upgradeValue = 72; // using redstoneBlocks
-				int value = Integer.parseInt(valueString) + upgradeValue;
+				int value = Integer.parseInt(redstoneValueString) + upgradeValue;
+				
 				String newLore = "Redstone: " + value;
 				lores.clear();
 				lores.add(newLore);
+				lores.add(expString);
 				im.setLore(lores);
+				
 				im.addEnchant(Enchantment.DAMAGE_ALL, value/100, true);
 				output.setItemMeta(im);
 			}
