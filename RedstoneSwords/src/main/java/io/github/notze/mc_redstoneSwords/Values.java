@@ -10,45 +10,31 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public final class Values {
+		
+	static Material swordMaterial = Material.WOOD_SWORD;
+	static String swordName = "Redstone Sword";
 	
-	private Values instance;
+	static String redstoneLore = "Redstone: ";
+	static String expLore = "Experience: ";
+	@SuppressWarnings("serial")
+	static HashMap<Integer,String> lores = new HashMap<Integer,String>(){{
+		put(0,redstoneLore);
+		put(1,expLore);
+	}};
+	static int loreLength = lores.size();
 	
-	private Material swordMaterial = Material.WOOD_SWORD;
-	private String swordName = "Redstone Sword";
+	static int redstoneFactor = 10;
+	static int speedBoost = 10;
+	static int speedBoostTime = 1;
+	static int expFactor = 10;
+	static int reclaimExpFactor = 2;
 	
-	private String redstoneLore = "Redstone: ";
-	private String expLore = "Experience: ";
-	private HashMap<Integer,String> lores = new HashMap<Integer,String>();
-	private int loreLength = 2;
+	private static ItemStack sword;
 	
-	private int redstoneFactor = 10;
-	private int expFactor = 10;
 	
-	private ItemMeta initMeta;
-	
-	private Values(){
-		lores.put(0, redstoneLore);
-		lores.put(1, expLore);
-	}
-	
-	public Values getInstance(){
-		if(instance == null)
-			instance = new Values();
-		return instance;
-	}
-	
-	public Material getSwordMaterial(){return swordMaterial;}
-	public String getSwordName(){return swordName;}
-	public String getRedstoneLore(){return redstoneLore;}
-	public String getExpLore(){return expLore;}
-	public HashMap<Integer,String> getLores(){return lores;}
-	public int getLoreLength(){return loreLength;}
-	public int getRedstoneFactor(){return redstoneFactor;}
-	public int getExpFactor(){return expFactor;}
-	
-	public ItemMeta getInitMeta(){
-		if(initMeta == null){
-			ItemStack sword = new ItemStack(swordMaterial);
+	public static ItemStack getInitSword(){
+		if(sword == null){
+			sword = new ItemStack(swordMaterial);
 			ItemMeta initMeta = sword.getItemMeta();
 			
 			initMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -58,12 +44,13 @@ public final class Values {
 			
 			List<String> outputLores = new ArrayList<String>();
 			for(int i=0; i<loreLength; i++){
-				outputLores.add(lores.get(i));
+				outputLores.add(lores.get(i)+"0");
 			}
 			
 			initMeta.setLore(outputLores);
+			sword.setItemMeta(initMeta);
 		}
-		return initMeta;
+		return sword;
 	}
 
 }

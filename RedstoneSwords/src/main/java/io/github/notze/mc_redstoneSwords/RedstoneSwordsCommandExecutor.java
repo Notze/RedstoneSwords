@@ -1,8 +1,5 @@
 package io.github.notze.mc_redstoneSwords;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,12 +9,10 @@ import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 
@@ -49,55 +44,19 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 				return false;
 			}
 			
-			if(args[0].equals("powerup")){
-				
+			// destroy the sword to get back the xp
+			if(args[0].equals("destroy")){
 				if (!(sender instanceof Player)){
 					sender.sendMessage("This command can only be run by a player.");
 					return true;
 				}else{
 					Player player = (Player) sender;
-					
-					ItemStack activeItem = player.getItemInHand();
-					if(activeItem.getType() != Material.WOOD_SWORD){
-						sender.sendMessage("You need to hold a wooden sword in your hand!");
-						return true;
-					}else{
-						PlayerInventory playerInventory = player.getInventory();
-						if(!(playerInventory.contains(Material.REDSTONE))){
-							sender.sendMessage("You need more redstone dust to do that!");
-							return true;
-						}else{
-							
-							activeItem = player.getItemInHand();
-							int level = activeItem.getEnchantmentLevel(Enchantment.DAMAGE_ALL) + 1;
-							if(level > 5){
-								player.sendMessage("Your Redstone Sword has already maximum power!");
-								return true;
-							}else{
-								player.sendMessage("Your Redstone Sword is now on Powerlevel " + level + "!");
-								activeItem.addEnchantment(Enchantment.DAMAGE_ALL, level);
-								List<String> lores = new ArrayList<String>();
-								lores.add("Powerlevel "+level);
-								ItemMeta im = activeItem.getItemMeta();
-								im.setDisplayName("Redstone Sword");
-								im.setLore(lores);
-								activeItem.setItemMeta(im);
-								
-								ItemStack[] playerInventoryStack = playerInventory.getContents();
-								for(ItemStack stack : playerInventoryStack){
-									if(stack != null && stack.getType() == Material.REDSTONE){
-										stack.setAmount(stack.getAmount()-1);
-										break;
-									}
-								}
-								playerInventory.setContents(playerInventoryStack);
-								return true;
-							}
-						}
-					}
+					ItemStack handItem = player.getItemInHand();
+					handItem.setDurability((short) 1000);
+					return true;
 				}
-				
-			}		
+			}
+			
 			return false;
 		}
 		
