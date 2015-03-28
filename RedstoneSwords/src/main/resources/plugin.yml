@@ -1,5 +1,5 @@
 name: Redstone Swords
-main: io.github.notze.redstoneSwords.RedstoneSwords
+main: io.github.notze.mc_redstoneSwords.RedstoneSwords
 version: 0.1
 
 commands:

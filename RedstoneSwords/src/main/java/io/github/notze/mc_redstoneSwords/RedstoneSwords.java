@@ -1,4 +1,4 @@
-package io.github.notze.redstoneSwords;
+package io.github.notze.mc_redstoneSwords;
 
 import java.util.List;
 import java.util.ArrayList;
