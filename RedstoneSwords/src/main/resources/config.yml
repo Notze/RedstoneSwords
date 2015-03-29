@@ -28,3 +28,7 @@ reclaimExpFactor: 2
 # False: ... enchantments are removed. (Doesn't affect the repair of an 
 # redstone sword)
 keepEnchantmentsOnRepair: false
+
+# The radius in which a scroll of growth will take effect
+scroll:
+  growthRadius: 4

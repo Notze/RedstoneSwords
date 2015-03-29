@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 public class Crafting implements Listener {
 	
@@ -25,6 +26,24 @@ public class Crafting implements Listener {
 	public Crafting(RedstoneSwords redstoneSwords){
 		this.redstoneSwords = redstoneSwords;
 		
+		// scroll of growth
+		ItemStack scrollCrop= Values.getScrollCrop();
+		redstoneSwords.getServer().addRecipe(
+				new ShapelessRecipe(scrollCrop)
+				.addIngredient(Material.PAPER)
+				.addIngredient(Material.INK_SACK)
+				.addIngredient(Material.FEATHER)
+				.addIngredient(Material.WHEAT));
+		
+		// scroll of fireball
+		ItemStack scrollFireball = Values.getScrollFireball();
+		redstoneSwords.getServer().addRecipe(
+				new ShapelessRecipe(scrollFireball)
+				.addIngredient(Material.PAPER)
+				.addIngredient(Material.INK_SACK)
+				.addIngredient(Material.FEATHER)
+				.addIngredient(Material.SULPHUR));
+		
 		// crafting the redstone sword
 		ItemStack rsword = Values.getInitSword();
 		ShapedRecipe rswordRecipe = new ShapedRecipe(rsword);
@@ -43,8 +62,6 @@ public class Crafting implements Listener {
 		rswordUpgradeBlocks.shape("rrr","rwr","rrr");
 		rswordUpgradeBlocks.setIngredient('r', Material.REDSTONE_BLOCK);
 		rswordUpgradeBlocks.setIngredient('w', Values.swordMaterial, -1);
-		
-		// add all recipes
 		redstoneSwords.getServer().addRecipe(rswordUpgrade);
 		redstoneSwords.getServer().addRecipe(rswordUpgradeBlocks);
 	}

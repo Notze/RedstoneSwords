@@ -11,6 +11,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public final class Values{
 		
+	static Material scrollMaterial = Material.PAPER;
+	static String scrollFireballName = "Scroll of Fireball";
+	static String scrollCropName = "Scroll of Growth";
+	
 	static Material swordMaterial = RedstoneSwords.swordMaterial;
 	static String swordName = "Redstone Sword";
 	
@@ -23,26 +27,44 @@ public final class Values{
 	}};
 	static int loreLength = lores.size();
 	
-	private static ItemStack sword;
+	
+	public static ItemStack getScrollFireball(){
+		ItemStack scroll = new ItemStack(scrollMaterial);
+		ItemMeta im = scroll.getItemMeta();
+		
+		im.setDisplayName(scrollFireballName);
+		
+		scroll.setItemMeta(im);
+		return scroll;
+	}
+	
+	public static ItemStack getScrollCrop(){
+		ItemStack scroll = new ItemStack(scrollMaterial);
+		ItemMeta im = scroll.getItemMeta();
+		
+		im.setDisplayName(scrollCropName);
+		
+		scroll.setItemMeta(im);
+		return scroll;
+	}
 	
 	public static ItemStack getInitSword(){
-		if(sword == null){
-			sword = new ItemStack(swordMaterial);
-			ItemMeta initMeta = sword.getItemMeta();
-			
-			initMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-			initMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-			
-			initMeta.setDisplayName(swordName);
-			
-			List<String> outputLores = new ArrayList<String>();
-			for(int i=0; i<loreLength; i++){
-				outputLores.add(lores.get(i)+"0");
-			}
-			
-			initMeta.setLore(outputLores);
-			sword.setItemMeta(initMeta);
+		ItemStack sword = new ItemStack(swordMaterial);
+		ItemMeta initMeta = sword.getItemMeta();
+		
+		initMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		initMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		
+		initMeta.setDisplayName(swordName);
+		
+		List<String> outputLores = new ArrayList<String>();
+		for(int i=0; i<loreLength; i++){
+			outputLores.add(lores.get(i)+"0");
 		}
+		
+		initMeta.setLore(outputLores);
+		sword.setItemMeta(initMeta);
+		
 		return sword;
 	}
 

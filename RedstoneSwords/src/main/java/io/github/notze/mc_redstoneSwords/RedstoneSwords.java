@@ -9,7 +9,7 @@ public class RedstoneSwords extends JavaPlugin {
 	static FileConfiguration config;
 	static Material swordMaterial;
 	static int redstoneFactor, redstoneOreAmount, speedBoost, 
-	speedBoostTime, expFactor, reclaimExpFactor;
+	speedBoostTime, expFactor, reclaimExpFactor, growthRadius;
 	static boolean keepEnchantmentsOnRepair;
 	
 	@SuppressWarnings("unused")
@@ -52,6 +52,7 @@ public class RedstoneSwords extends JavaPlugin {
 		expFactor =  config.getInt("expFactor");
 		reclaimExpFactor =  config.getInt("reclaimExpFactor");
 		keepEnchantmentsOnRepair =  config.getBoolean("keepEnchantmentsOnRepair");
+		growthRadius = config.getInt("scroll.growthRadius");
 	}
 	
 }

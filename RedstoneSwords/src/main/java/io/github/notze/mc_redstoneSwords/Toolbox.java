@@ -34,6 +34,19 @@ public class Toolbox {
 		player.getInventory().remove(handItem);
 	}
 	
+	static boolean scrollsEqual(ItemStack scroll1, ItemStack scroll2){
+		if(!(scroll1.hasItemMeta() && scroll2.hasItemMeta())) return false;
+		if(!(scroll1.getType().equals(scroll2.getType()))) return false;
+		if(!((scroll1.getItemMeta().hasDisplayName()
+				&& scroll2.getItemMeta().hasDisplayName())))
+			return false;
+		if(!(scroll1.getItemMeta().getDisplayName()
+				.equals(scroll2.getItemMeta().getDisplayName())))
+			return false;
+		
+		return true;
+	}
+	
 	/**
 	 * check whether an item is our sword or not.
 	 * 

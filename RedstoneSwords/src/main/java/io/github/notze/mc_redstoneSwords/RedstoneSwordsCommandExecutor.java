@@ -57,6 +57,21 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 				}
 			}
 			
+			// damage item in hand
+			if(args[0].equals("damage")){
+				if (!(sender instanceof Player)){
+					sender.sendMessage("This command can only be run by a player.");
+					return true;
+				}else{
+					Player player = (Player) sender;
+					ItemStack handItem = player.getItemInHand();
+					
+					handItem.setDurability((short) 10000);
+					
+					return true;
+				}
+			}
+			
 			return false;
 		}
 		
