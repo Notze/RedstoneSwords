@@ -9,9 +9,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public final class Values {
+public final class Values{
 		
-	static Material swordMaterial = Material.GOLD_SWORD;
+	static Material swordMaterial = RedstoneSwords.swordMaterial;
 	static String swordName = "Redstone Sword";
 	
 	static String redstoneLore = "Redstone: ";
@@ -23,16 +23,7 @@ public final class Values {
 	}};
 	static int loreLength = lores.size();
 	
-	static int redstoneFactor = 10;
-	static int redstoneOreAmount = 5;
-	static int speedBoost = 10;
-	static int speedBoostTime = 1;
-	static int expFactor = 10;
-	static int reclaimExpFactor = 2;
-	static boolean keepEnchantmentsOnRepair = false;
-	
 	private static ItemStack sword;
-	
 	
 	public static ItemStack getInitSword(){
 		if(sword == null){

@@ -24,10 +24,10 @@ public class Toolbox {
 		if(!(Toolbox.isRedstoneSword(handItem))) return;
 		
 		int exp = Toolbox.increaseLore(handItem, Values.expLore, 0);
-		if(Values.reclaimExpFactor == 0){
+		if(RedstoneSwords.reclaimExpFactor == 0){
 			exp = 0;
 		}else{
-			exp /= Values.reclaimExpFactor;
+			exp /= RedstoneSwords.reclaimExpFactor;
 		}
 		
 		player.giveExp(exp);

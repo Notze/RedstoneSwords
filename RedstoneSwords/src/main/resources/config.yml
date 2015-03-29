@@ -1,0 +1,30 @@
+# You can set any Material for the redstone sword, e.g. 'STICK' will work
+# and will be indestructable. /rs destroy however will destroy it and give
+# you the stored experience back.
+swordMaterial: WOOD_SWORD
+
+# The amount of (stored) redstone to consum in case to activate the 
+# right-click ability. (Speed Boost)
+redstoneFactor: 5
+
+# The amount of redstone to add when a redstone ore is consumed
+redstonOreAmount: 5
+
+# The multiplier for the speedboost. (right-click)
+speedBoost: 10
+
+# The multiplier for the duration of the speedboost. 2 equals 1sec.
+speedBoostTime: 1
+
+# The amount of experience to be consumed to increase the swords strengh.
+expFactor: 10
+
+# How much of the stored xp should be gave back to the player when the sword
+# breaks? 0 = nothing, 1 = 100%, 2 = 50%, 4 = 25%, ...
+reclaimExpFactor: 2
+
+# True: If a item is repaired with its crafting material the enchantments
+# don't get lost.
+# False: ... enchantments are removed. (Doesn't affect the repair of an 
+# redstone sword)
+keepEnchantmentsOnRepair: false

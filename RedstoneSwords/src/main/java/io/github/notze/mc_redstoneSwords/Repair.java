@@ -99,7 +99,7 @@ public class Repair implements Listener{
 			ItemStack[] inventory = e.getInventory().getContents();
 			
 			for(int slot=1; slot<inventory.length; slot++){ // start at slot 1, slot 0 ist the output
-				if(Values.keepEnchantmentsOnRepair){
+				if(RedstoneSwords.keepEnchantmentsOnRepair){
 					if(inventory[slot].getType() == resultType){
 						output = inventory[slot].clone();
 						break;

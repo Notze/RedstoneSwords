@@ -39,12 +39,12 @@ public class Events implements Listener{
 		ItemStack handItem = e.getPlayer().getItemInHand();
 		if(Toolbox.isRedstoneSword(handItem)){
 		
-			int rest = Toolbox.increaseLore(handItem, Values.redstoneLore, -Values.redstoneFactor);
+			int rest = Toolbox.increaseLore(handItem, Values.redstoneLore, -RedstoneSwords.redstoneFactor);
 			if(rest != -1){
 				e.getPlayer().addPotionEffect(new PotionEffect(
 						PotionEffectType.SPEED, 
-						Values.speedBoostTime*10, 
-						Values.speedBoost*10));
+						RedstoneSwords.speedBoostTime*10, 
+						RedstoneSwords.speedBoost*10));
 			}else{
 				e.getPlayer().sendMessage("Not enough redstone!");
 			}
@@ -67,7 +67,7 @@ public class Events implements Listener{
 			int value = Toolbox.increaseLore(handItem, Values.expLore, e.getAmount());
 			e.setAmount(0); // no xp for the player
 			
-			handItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, Math.floorDiv(value,Values.expFactor));
+			handItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, Math.floorDiv(value,RedstoneSwords.expFactor));
 		}
 	}
 	
