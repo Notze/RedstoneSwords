@@ -52,7 +52,7 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 				}else{
 					Player player = (Player) sender;
 					ItemStack handItem = player.getItemInHand();
-					handItem.setDurability((short) 1000);
+					Toolbox.destroyRedstoneSword(player, handItem);
 					return true;
 				}
 			}

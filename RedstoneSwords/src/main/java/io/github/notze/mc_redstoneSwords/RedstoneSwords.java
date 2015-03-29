@@ -6,11 +6,13 @@ public final class RedstoneSwords extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		getLogger().info("onEnable invoced!");
 		Crafting crafting = new Crafting(this);
-		getLogger().info("Constructor of Crafting should be invoced!");
+		Events events = new Events(this);
+		Repair repair = new Repair(this);
 		
-		getServer().getPluginManager().registerEvents(crafting, this);
+		getServer().getPluginManager().registerEvents(repair, this); // repair comes first
+		getServer().getPluginManager().registerEvents(crafting, this); // special recipes override repairs
+		getServer().getPluginManager().registerEvents(events, this); 
 		
 		this.getCommand("rshelp").setExecutor(new RedstoneSwordsCommandExecutor(this));
 		this.getCommand("rs").setExecutor(new RedstoneSwordsCommandExecutor(this));
