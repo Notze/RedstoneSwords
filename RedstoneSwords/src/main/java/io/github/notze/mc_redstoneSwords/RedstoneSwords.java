@@ -12,6 +12,7 @@ public class RedstoneSwords extends JavaPlugin {
 	speedBoostTime, expFactor, reclaimExpFactor;
 	static boolean keepEnchantmentsOnRepair;
 	
+	@SuppressWarnings("unused")
 	@Override
 	public void onEnable() {
 		initialiseConfig(); // should be ALWAYS the first here
@@ -19,6 +20,7 @@ public class RedstoneSwords extends JavaPlugin {
 		Crafting crafting = new Crafting(this);
 		Events events = new Events(this);
 		Repair repair = new Repair(this);
+		Smelting smelting = new Smelting(this);
 		
 		getServer().getPluginManager().registerEvents(repair, this); // repair comes first
 		getServer().getPluginManager().registerEvents(crafting, this); // special recipes override repairs
