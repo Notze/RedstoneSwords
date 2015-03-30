@@ -107,6 +107,27 @@ public class Utilities {
 	}
 	
 	/**
+	 * return the value of a lore as string (Mode: Nothing -> Nothing)
+	 * 
+	 * @param sword
+	 * 		the redstone sword
+	 * @param someLore
+	 * 		a lore, only use lores from Values.class
+	 * @return
+	 * 		the value as string
+	 */
+	public static String getLoreValueAsString(ItemStack sword, String someLore){
+		ItemMeta swordMeta = sword.getItemMeta();
+		List<String> lores = swordMeta.getLore();
+		
+		for(String lore : lores)
+			if(lore.contains(someLore))
+				return lore.substring(someLore.length());
+				
+		return null;
+	}
+	
+	/**
 	 * checks whether two recipes are the same or not
 	 * 
 	 * @param r1

@@ -3,9 +3,14 @@
 # you the stored experience back.
 swordMaterial: WOOD_SWORD
 
+redstone:
+
 # The amount of (stored) redstone to consum in case to activate the 
 # right-click ability. (Speed Boost)
-redstoneFactor: 5
+  boost: 5
+
+# enderpearl cost for teleport
+  teleport: 1
 
 # The amount of redstone to add when a redstone ore is consumed
 redstonOreAmount: 5

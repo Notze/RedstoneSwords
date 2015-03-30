@@ -12,7 +12,7 @@ public final class RedstoneSwords extends JavaPlugin {
 
 	static FileConfiguration config;
 	public static Material swordMaterial;
-	public static int redstoneFactor, redstoneOreAmount, speedBoost, 
+	public static int boostCost, teleportCost, redstoneOreAmount, speedBoost, 
 	speedBoostTime, expFactor, reclaimExpFactor, growthRadius;
 	public static boolean keepEnchantmentsOnRepair;
 	
@@ -49,7 +49,8 @@ public final class RedstoneSwords extends JavaPlugin {
 		config = getConfig();
 
 		swordMaterial = Material.getMaterial(config.getString("swordMaterial"));
-		redstoneFactor = config.getInt("redstoneFactor");
+		boostCost = config.getInt("redstone.boost");
+		teleportCost = config.getInt("redstone.teleport");
 		redstoneOreAmount =  config.getInt("redstoneOreAmount");
 		speedBoost =  config.getInt("speedBoost");
 		speedBoostTime =  config.getInt("speedBoostTime");

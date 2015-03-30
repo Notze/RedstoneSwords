@@ -1,9 +1,15 @@
 package io.github.notze.redstoneswords;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import io.github.notze.util.Items;
 import io.github.notze.util.Utilities;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Fireball;
@@ -15,6 +21,7 @@ import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -49,17 +56,66 @@ public class Events implements Listener{
 		
 		// sword ability
 		if(Utilities.isRedstoneSword(handItem)){
-		
-			int rest = Utilities.increaseLore(handItem, Items.redstoneLore, -RedstoneSwords.redstoneFactor);
-			if(rest != -1){
-				player.addPotionEffect(new PotionEffect(
-						PotionEffectType.SPEED, 
-						RedstoneSwords.speedBoostTime*10, 
-						RedstoneSwords.speedBoost*10));
-			}else{
-				player.sendMessage("Not enough redstone!");
+			String mode = Utilities.getLoreValueAsString(handItem, Items.modeLore);
+			
+			// change mode
+			if(player.isSneaking()){
+				
+				ItemMeta im = handItem.getItemMeta();
+				String nextMode = null;
+				List<String> lores = im.getLore();
+				List<String> newLores = new ArrayList<String>(Items.loreLength);
+				
+				// find next mode
+				Iterator<String> it = Items.modes.iterator();
+				while(it.hasNext())
+					if(it.next().equals(mode) && it.hasNext())
+						nextMode = it.next();
+				if(nextMode == null) nextMode = Items.modes.get(0);
+				
+				// set next mode
+				for(String lore : lores){
+					if(lore.contains(Items.modeLore)){
+						newLores.add(Items.modeLore + nextMode);
+					}else{
+						newLores.add(lore);
+					}
+				}
+				im.setLore(newLores);
+				handItem.setItemMeta(im);
+				player.sendMessage("[Mode] " + nextMode);
+				
+			}else if(mode.equals(Items.teleportModeLore)){
+				// teleport
+				Block b = player.getTargetBlock((Set<Material>) null, 200);
+				if(b.getType().equals(Material.AIR)) return;
+				Location loc = b.getLocation();
+				Vector offset = new Vector(0.5,1,0.5);
+				Location target = loc.clone().add(offset);
+				
+				// make shure that there is enough space for the player
+				for(int i=1; i<=2; i++)
+					if(loc.add(new Vector(0,1,0)).getBlock().getType() != Material.AIR)
+						return;
+				
+				int rest = Utilities.increaseLore(handItem, Items.enderLore, -RedstoneSwords.teleportCost);
+				if(rest != -1){
+					player.teleport(target.setDirection(player.getLocation().getDirection()));
+				}else{
+					player.sendMessage("Not enough enderpearls!");
+				}
+			}else if(mode.equals(Items.boostModeLore)){
+				// boost
+				int rest = Utilities.increaseLore(handItem, Items.redstoneLore, -RedstoneSwords.boostCost);
+				if(rest != -1){
+					player.addPotionEffect(new PotionEffect(
+							PotionEffectType.SPEED, 
+							RedstoneSwords.speedBoostTime*10, 
+							RedstoneSwords.speedBoost*10));
+				}else{
+					player.sendMessage("Not enough redstone!");
+				}
 			}
-		
 		}
 		
 		// scroll of fireball
@@ -100,18 +156,11 @@ public class Events implements Listener{
 						}else if(b.getTypeId() == 142){ // id of potatoes
 							b.setTypeIdAndData(142, (byte) 7, false);
 						}
-						
 					}
 				}
 			}		
-			
-			
 			decreaseStack(player, handItem);
 		}
-		
-		
-		
-		
 	}
 	
 	private void decreaseStack(Player player, ItemStack handItem){

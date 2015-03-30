@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -19,6 +20,7 @@ public class Crafting implements Listener {
 	
 	ShapedRecipe rswordUpgrade;
 	ShapedRecipe rswordUpgradeBlocks;
+	ShapedRecipe rswordUpgradeEnder;
 	
 	/**
 	 * Adds new recipes
@@ -58,16 +60,25 @@ public class Crafting implements Listener {
 		
 		// upgrading the redstone sword
 		ItemStack rswordUpgraded = new ItemStack(Items.swordMaterial);
+		
 		rswordUpgrade = new ShapedRecipe(rswordUpgraded);
-		rswordUpgradeBlocks = new ShapedRecipe(rswordUpgraded);
 		rswordUpgrade.shape("rrr","rwr","rrr");
 		rswordUpgrade.setIngredient('r', Material.REDSTONE);
 		rswordUpgrade.setIngredient('w', Items.swordMaterial, -1);
+		redstoneSwords.getServer().addRecipe(rswordUpgrade);
+		
+		rswordUpgradeBlocks = new ShapedRecipe(rswordUpgraded);
 		rswordUpgradeBlocks.shape("rrr","rwr","rrr");
 		rswordUpgradeBlocks.setIngredient('r', Material.REDSTONE_BLOCK);
 		rswordUpgradeBlocks.setIngredient('w', Items.swordMaterial, -1);
-		redstoneSwords.getServer().addRecipe(rswordUpgrade);
 		redstoneSwords.getServer().addRecipe(rswordUpgradeBlocks);
+		
+		rswordUpgradeEnder = new ShapedRecipe(rswordUpgraded);
+		rswordUpgradeEnder.shape("rrr","rwr","rrr");
+		rswordUpgradeEnder.setIngredient('r', Material.ENDER_PEARL);
+		rswordUpgradeEnder.setIngredient('w', Items.swordMaterial, -1);
+		redstoneSwords.getServer().addRecipe(rswordUpgradeEnder);
+		
 	}
 	
 	/**
@@ -78,25 +89,27 @@ public class Crafting implements Listener {
 	 */
 	@EventHandler
 	public void onPrepareItemCraft(PrepareItemCraftEvent e){
-		if(!(Utilities.recipesEqual(e.getRecipe(), rswordUpgrade) 
-				|| Utilities.recipesEqual(e.getRecipe(), rswordUpgradeBlocks))) return;
-		
+		if(Utilities.recipesEqual(e.getRecipe(), rswordUpgrade)){
+			increaseValueOnOutput(e.getInventory(), Items.redstoneLore, 8);
+		}else if(Utilities.recipesEqual(e.getRecipe(), rswordUpgradeBlocks)){
+			increaseValueOnOutput(e.getInventory(), Items.redstoneLore, 72);
+		}else if(Utilities.recipesEqual(e.getRecipe(), rswordUpgradeEnder)){
+			increaseValueOnOutput(e.getInventory(), Items.enderLore, 8);
+		}
+	}
+	
+	private void increaseValueOnOutput(CraftingInventory inv, String lore, int amount){
 		ItemStack output = null;
-		ItemStack[] inventory = e.getInventory().getContents();
+		ItemStack[] inventory = inv.getContents();
 		for(ItemStack item : inventory){
 			if(Utilities.isRedstoneSword(item)){
 				output = item.clone();
 				break;
 			}
 		}
-		if(output != null){
-			int upgradeValue = 8; // using redstoneDust
-			if(e.getInventory().getItem(1).getType() == Material.REDSTONE_BLOCK) 
-				upgradeValue = 72; // using redstoneBlocks
 			
-			Utilities.increaseLore(output, Items.redstoneLore, upgradeValue);
-		}
-		e.getInventory().setResult(output);
+		Utilities.increaseLore(output, lore, amount);
+		inv.setResult(output);
 	}
 	
 }
