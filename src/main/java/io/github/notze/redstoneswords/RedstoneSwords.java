@@ -1,10 +1,10 @@
-package io.github.notze.mc_redstoneSwords;
+package io.github.notze.redstoneswords;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class RedstoneSwords extends JavaPlugin {
+public final class RedstoneSwords extends JavaPlugin {
 
 	static FileConfiguration config;
 	static Material swordMaterial;

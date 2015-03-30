@@ -1,4 +1,4 @@
-package io.github.notze.mc_redstoneSwords;
+package io.github.notze.redstoneswords;
 
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
