@@ -1,4 +1,6 @@
-package io.github.notze.redstoneswords;
+package io.github.notze.util;
+
+import io.github.notze.redstoneswords.RedstoneSwords;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class Toolbox {
+public class Utilities {
 
 	/**
 	 * remove redstone sword and give back xp
@@ -20,10 +22,10 @@ public class Toolbox {
 	 * @param handItem
 	 * 		item the player holds
 	 */
-	static void destroyRedstoneSword(Player player, ItemStack handItem){
-		if(!(Toolbox.isRedstoneSword(handItem))) return;
+	public static void destroyRedstoneSword(Player player, ItemStack handItem){
+		if(!(Utilities.isRedstoneSword(handItem))) return;
 		
-		int exp = Toolbox.increaseLore(handItem, Values.expLore, 0);
+		int exp = Utilities.increaseLore(handItem, Items.expLore, 0);
 		if(RedstoneSwords.reclaimExpFactor == 0){
 			exp = 0;
 		}else{
@@ -34,7 +36,7 @@ public class Toolbox {
 		player.getInventory().remove(handItem);
 	}
 	
-	static boolean scrollsEqual(ItemStack scroll1, ItemStack scroll2){
+	public static boolean scrollsEqual(ItemStack scroll1, ItemStack scroll2){
 		if(!(scroll1.hasItemMeta() && scroll2.hasItemMeta())) return false;
 		if(!(scroll1.getType().equals(scroll2.getType()))) return false;
 		if(!((scroll1.getItemMeta().hasDisplayName()
@@ -55,16 +57,16 @@ public class Toolbox {
 	 * @return
 	 * 		true if it is the redstone sword
 	 */
-	static boolean isRedstoneSword(ItemStack sword){
+	public static boolean isRedstoneSword(ItemStack sword){
 		if(!(sword.hasItemMeta())) return false; // rs has meta
 		ItemMeta swordMeta = sword.getItemMeta();
 		if(!(swordMeta.hasDisplayName()) // check for right name
-				|| !(swordMeta.getDisplayName().equals(Values.swordName))) 
+				|| !(swordMeta.getDisplayName().equals(Items.swordName))) 
 			return false;
 		if(!(swordMeta.hasLore())) return false; // check for lore
 		List<String> lores = swordMeta.getLore();
-		for(int i=0; i<Values.loreLength; i++) // check for right lore
-			if(!(lores.get(i).contains(Values.lores.get(i))))
+		for(int i=0; i<Items.loreLength; i++) // check for right lore
+			if(!(lores.get(i).contains(Items.lores.get(i))))
 				return false;
 		
 		return true;
@@ -82,10 +84,10 @@ public class Toolbox {
 	 * @return
 	 * 		the increased value
 	 */
-	static int increaseLore(ItemStack sword, String someLore, int amount){
+	public static int increaseLore(ItemStack sword, String someLore, int amount){
 		ItemMeta swordMeta = sword.getItemMeta();
 		List<String> lores = swordMeta.getLore();
-		List<String> newLores = new ArrayList<String>(Values.loreLength);
+		List<String> newLores = new ArrayList<String>(Items.loreLength);
 		int newValue = 0;
 		
 		for(String lore : lores){
@@ -114,7 +116,7 @@ public class Toolbox {
 	 * @return
 	 * 		true if recipes are equal
 	 */
-	static boolean recipesEqual(Recipe recipe1, Recipe recipe2){
+	public static boolean recipesEqual(Recipe recipe1, Recipe recipe2){
 		// only implemented for shaped recipes
 		if(!(recipe1 instanceof ShapedRecipe)) return false;
 		if(!(recipe2 instanceof ShapedRecipe)) return false;

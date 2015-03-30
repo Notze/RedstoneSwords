@@ -1,5 +1,9 @@
 package io.github.notze.redstoneswords;
 
+import io.github.notze.recipes.Crafting;
+import io.github.notze.recipes.Repair;
+import io.github.notze.recipes.Smelting;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -7,10 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class RedstoneSwords extends JavaPlugin {
 
 	static FileConfiguration config;
-	static Material swordMaterial;
-	static int redstoneFactor, redstoneOreAmount, speedBoost, 
+	public static Material swordMaterial;
+	public static int redstoneFactor, redstoneOreAmount, speedBoost, 
 	speedBoostTime, expFactor, reclaimExpFactor, growthRadius;
-	static boolean keepEnchantmentsOnRepair;
+	public static boolean keepEnchantmentsOnRepair;
 	
 	@SuppressWarnings("unused")
 	@Override

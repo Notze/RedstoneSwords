@@ -1,4 +1,6 @@
-package io.github.notze.redstoneswords;
+package io.github.notze.util;
+
+import io.github.notze.redstoneswords.RedstoneSwords;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,23 +11,26 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public final class Values{
+public final class Items{
 		
-	static Material scrollMaterial = Material.PAPER;
+	// Materials
+	public static Material swordMaterial = RedstoneSwords.swordMaterial;
+	
+	public static Material scrollMaterial = Material.PAPER;
+	// Names
 	static String scrollFireballName = "Scroll of Fireball";
 	static String scrollCropName = "Scroll of Growth";
-	
-	static Material swordMaterial = RedstoneSwords.swordMaterial;
 	static String swordName = "Redstone Sword";
 	
-	static String redstoneLore = "Redstone: ";
-	static String expLore = "Experience: ";
+	// Lores
+	public static String redstoneLore = "Redstone: ";
+	public static String expLore = "Experience: ";
 	@SuppressWarnings("serial")
-	static HashMap<Integer,String> lores = new HashMap<Integer,String>(){{
+	public static HashMap<Integer,String> lores = new HashMap<Integer,String>(){{
 		put(0,redstoneLore);
 		put(1,expLore);
 	}};
-	static int loreLength = lores.size();
+	public static int loreLength = lores.size();
 	
 	
 	public static ItemStack getScrollFireball(){

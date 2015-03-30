@@ -1,4 +1,7 @@
-package io.github.notze.redstoneswords;
+package io.github.notze.recipes;
+
+import io.github.notze.redstoneswords.RedstoneSwords;
+import io.github.notze.util.Utilities;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,7 +108,7 @@ public class Repair implements Listener{
 						break;
 					}
 				}else{
-					if(Toolbox.isRedstoneSword(inventory[slot])){
+					if(Utilities.isRedstoneSword(inventory[slot])){
 						output = inventory[slot].clone();
 						break;
 					}

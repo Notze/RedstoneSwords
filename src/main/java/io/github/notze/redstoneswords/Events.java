@@ -1,5 +1,8 @@
 package io.github.notze.redstoneswords;
 
+import io.github.notze.util.Items;
+import io.github.notze.util.Utilities;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -45,9 +48,9 @@ public class Events implements Listener{
 		ItemStack handItem = player.getItemInHand();
 		
 		// sword ability
-		if(Toolbox.isRedstoneSword(handItem)){
+		if(Utilities.isRedstoneSword(handItem)){
 		
-			int rest = Toolbox.increaseLore(handItem, Values.redstoneLore, -RedstoneSwords.redstoneFactor);
+			int rest = Utilities.increaseLore(handItem, Items.redstoneLore, -RedstoneSwords.redstoneFactor);
 			if(rest != -1){
 				player.addPotionEffect(new PotionEffect(
 						PotionEffectType.SPEED, 
@@ -60,7 +63,7 @@ public class Events implements Listener{
 		}
 		
 		// scroll of fireball
-		if(Toolbox.scrollsEqual(handItem, Values.getScrollFireball())){
+		if(Utilities.scrollsEqual(handItem, Items.getScrollFireball())){
 			
 			Vector offset = player.getLocation().getDirection().multiply(2);
 			Location spawnLoc = player.getEyeLocation().add(offset);
@@ -70,7 +73,7 @@ public class Events implements Listener{
 		}
 		
 		// scroll of growth
-		if(Toolbox.scrollsEqual(handItem, Values.getScrollCrop())){
+		if(Utilities.scrollsEqual(handItem, Items.getScrollCrop())){
 			
 			Location loc = player.getLocation();
 			
@@ -131,8 +134,8 @@ public class Events implements Listener{
 		
 		// check if player is holding the redstone sword
 		ItemStack handItem = e.getPlayer().getItemInHand();
-		if(Toolbox.isRedstoneSword(handItem)){
-			int value = Toolbox.increaseLore(handItem, Values.expLore, e.getAmount());
+		if(Utilities.isRedstoneSword(handItem)){
+			int value = Utilities.increaseLore(handItem, Items.expLore, e.getAmount());
 			e.setAmount(0); // no xp for the player
 			
 			handItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, Math.floorDiv(value,RedstoneSwords.expFactor));
@@ -150,7 +153,7 @@ public class Events implements Listener{
 		Player player = e.getPlayer();
 		ItemStack handItem = player.getItemInHand();
 		
-		Toolbox.destroyRedstoneSword(player, handItem);
+		Utilities.destroyRedstoneSword(player, handItem);
 	}
 	
 }

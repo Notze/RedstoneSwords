@@ -1,5 +1,7 @@
 package io.github.notze.redstoneswords;
 
+import io.github.notze.util.Utilities;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -52,7 +54,7 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 				}else{
 					Player player = (Player) sender;
 					ItemStack handItem = player.getItemInHand();
-					Toolbox.destroyRedstoneSword(player, handItem);
+					Utilities.destroyRedstoneSword(player, handItem);
 					return true;
 				}
 			}
