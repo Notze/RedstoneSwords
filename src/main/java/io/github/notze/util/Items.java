@@ -45,6 +45,7 @@ public final class Items{
 	public static String enderLore = "Enderpearl: ";
 	public static String redstoneLore = "Redstone: ";
 	public static String expLore = "Experience: ";
+	public static String lvlLore = "Level: ";
 	public static String modeLore = "Mode: ";
 		public static String noneModeLore = "Nothing";
 		public static String boostModeLore = "Speedboost";
@@ -61,6 +62,7 @@ public final class Items{
 		add(enderLore);
 		add(redstoneLore);
 		add(expLore);
+		add(lvlLore);
 		add(modeLore); // always last item
 	}};
 	public static int loreLength = lores.size();

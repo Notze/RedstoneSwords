@@ -59,9 +59,10 @@ public class Crafting implements Listener {
 		// crafting the redstone sword
 		ItemStack rsword = Items.getInitSword();
 		ShapedRecipe rswordRecipe = new ShapedRecipe(rsword);
-		rswordRecipe.shape("r","r","s");
+		rswordRecipe.shape("drd","drd"," s ");
 		rswordRecipe.setIngredient('r', Material.REDSTONE);
 		rswordRecipe.setIngredient('s', Material.STICK);
+		rswordRecipe.setIngredient('d', Material.IRON_INGOT);
 		redstoneSwords.getServer().addRecipe(rswordRecipe);
 		
 		// upgrading the redstone sword

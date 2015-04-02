@@ -107,6 +107,37 @@ public class Utilities {
 	}
 	
 	/**
+	 * set a counter in the lore
+	 * 
+	 * @param sword
+	 * 		the redstone sword
+	 * @param someLore
+	 * 		a lore, only use lores from Values.class
+	 * @param amount
+	 * 		amount to increase
+	 * @return 
+	 * @return
+	 * 		the increased value
+	 */
+	public static void setLore(ItemStack sword, String someLore, int amount){
+		ItemMeta swordMeta = sword.getItemMeta();
+		List<String> lores = swordMeta.getLore();
+		List<String> newLores = new ArrayList<String>(Items.loreLength);
+		int newValue = amount;
+		
+		for(String lore : lores){
+			if(lore.contains(someLore)){
+				newLores.add(someLore + newValue);
+			}else{
+				newLores.add(lore);
+			}
+		}
+		
+		swordMeta.setLore(newLores);
+		sword.setItemMeta(swordMeta);
+	}
+	
+	/**
 	 * return the value of a lore as string (Mode: Nothing -> Nothing)
 	 * 
 	 * @param sword

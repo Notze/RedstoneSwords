@@ -63,6 +63,19 @@ public class Events implements Listener{
 		final Player player = e.getPlayer();
 		ItemStack handItem = player.getItemInHand();
 		
+		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+			if(Utilities.isRedstoneSword(handItem)){
+				
+				Block b = e.getClickedBlock();
+				if(b.getType().equals(Material.REDSTONE_ORE) || b.getType().equals(Material.GLOWING_REDSTONE_ORE)){
+					b.setType(Material.AIR);
+					Utilities.increaseLore(handItem, Items.redstoneLore, RedstoneSwords.redstoneOreAmount);
+					e.setCancelled(true); // normally redstone changes to glowing redstone after right click
+				}
+				
+			}
+		}// end of right click block
+		
 		if(e.getAction().equals(Action.RIGHT_CLICK_AIR)){
 			
 			// sword ability
@@ -297,12 +310,39 @@ public class Events implements Listener{
 		// check if player is holding the redstone sword
 		ItemStack handItem = e.getPlayer().getItemInHand();
 		if(Utilities.isRedstoneSword(handItem)){
-			int value = Utilities.increaseLore(handItem, Items.expLore, e.getAmount());
-			e.setAmount(0); // no xp for the player
-			
-			handItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, Math.floorDiv(value,RedstoneSwords.expFactor));
+			int value = Utilities.increaseLore(handItem, Items.expLore, 0);
+			if(value < e.getPlayer().getTotalExperience()){
+				value = Utilities.increaseLore(handItem, Items.expLore, e.getAmount());
+				e.setAmount(0); // no xp for the player
+				int newLevel = toLevel(value,0);
+				Utilities.setLore(handItem, Items.lvlLore, newLevel);
+				handItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, Math.floorDiv(newLevel,RedstoneSwords.expFactor));
+			}
 		}
 	}
+	
+	/**
+	 * calculate the level by total xp (vanilla formular)
+	 * 
+	 * @param total
+	 * 		total amount of experience
+	 * @param level
+	 * 		initial 0
+	 * @return
+	 * 		the level
+	 */
+	static int toLevel(int total, int level){
+        int need;
+        if(level <= 15){
+            need = 7 + 2*level;
+        }else if(level <= 30){
+            need = 37 + 5*(level-15);
+        }else{
+            need = 107 + 9*(level-30);
+        }
+        if(total<need) return level;
+        return toLevel(total-need, level+1);
+    }
 	
 	/**
 	 * give back experience when the sword breaks

@@ -10,13 +10,13 @@
 
 
 sword:
-  material: WOOD_SWORD
-  redstonOreAmount: 5
+  material: IRON_SWORD
+  redstoneOreAmount: 5
   reclaimExpFactor: 2
   cost:
     boost: 5
     teleport: 1
-    exp: 20
+    exp: 5
   multiplier:
     boost: 10
   duration:
