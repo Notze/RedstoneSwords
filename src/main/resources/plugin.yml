@@ -10,7 +10,7 @@ commands:
     permission-message: You don't have permission <redstoneSwords.rshelp>
   rs:
     description: Redstone Sword commands
-    usage: Usage /rs damage|destroy
+    usage: Usage /rs destroy
     permission: redstoneSwords.rs
     permission-message: You don't have permission <redstoneSwords.rs>
   rsclearinventory:

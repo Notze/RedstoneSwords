@@ -1,43 +1,54 @@
-# You can set any Material for the redstone sword, e.g. 'STICK' will work
-# and will be indestructable. /rs destroy however will destroy it and give
-# you the stored experience back.
-
-# The amount of (stored) redstone to consum in case to activate the 
-# right-click ability. (Speed Boost)
-
-# How much of the stored xp should be gave back to the player when the sword
-# breaks? 0 = nothing, 1 = 100%, 2 = 50%, 4 = 25%, ...
-
-
-sword:
-  material: IRON_SWORD
-  redstoneOreAmount: 5
-  reclaimExpFactor: 2
-  cost:
-    boost: 5
-    teleport: 1
-    exp: 5
-  multiplier:
-    boost: 10
-  duration:
-    boost: 1
-
-
-
 # True: If a item is repaired with its crafting material the enchantments
 # don't get lost.
 # False: ... enchantments are removed. (Doesn't affect the repair of an 
 # redstone sword)
 keepEnchantmentsOnRepair: false
 
-# The radius in which a scroll of growth will take effect
+sword:
+  # You can set any Material for the redstone sword, e.g. 'STICK' will work
+  # and will be indestructable. /rs destroy however will destroy it and give
+  # you the stored experience back.
+  material: IRON_SWORD
+
+  # when the sword consumes a redstone ore how much should be added to the sword?
+  redstoneOreAmount: 5
+
+  # How much of the stored xp should be gave back to the player when the sword
+  # breaks? 0 = nothing, 1 = 100%, 2 = 50%, 4 = 25%, ...
+  reclaimExpFactor: 2
+
+  cost:
+    # needed amount of redstone for boost
+    boost: 5
+    
+    # needed amount of enderpearls for teleport
+    teleport: 1
+    
+    # when should the sword get stronger? 5 = always after 5 level
+    exp: 5
+
+  multiplier:
+    # strengh of speed buff
+    boost: 10
+
+  duration:
+    # duration of speed buff
+    boost: 1
+
 scroll:
+  # The radius in which a scroll of growth will take effect
   growthRadius: 4
+  
+  # time limit for levitation in seconds
   flightTime: 10
+  
+  # time limit for higher jumping in seconds
   jumpTime: 10
+  
+  # time limit for underwater breathing in seconds
   respirationTime: 120
   
-# Damage dealt by a thrown Axe
+# Damage dealt by a thrown Axe in half hearts
 thrownAxeDamage:
   wood: 7
   stone: 8

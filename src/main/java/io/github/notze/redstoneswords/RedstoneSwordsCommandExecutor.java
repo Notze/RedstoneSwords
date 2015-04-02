@@ -1,6 +1,5 @@
 package io.github.notze.redstoneswords;
 
-import io.github.notze.util.Items;
 import io.github.notze.util.Utilities;
 
 import org.bukkit.Location;
@@ -32,6 +31,7 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 			sender.sendMessage("You can use the following commands:\n"
 					//TODO update it
 					+ "/rshelp - show this help\n"
+					+ "/rs destroy - destroy the redstonesword in your hand\n"
 					+ "/rsclearinventory - remove all items in your inventory\n"
 					+ "/rsstoreinventory - store your inventory in a chest\n"
 					+ "");
@@ -61,36 +61,36 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 				}
 			}
 			
-			// damage item in hand
-			if(args[0].equals("damage")){
-				if (!(sender instanceof Player)){
-					sender.sendMessage("This command can only be run by a player.");
-					return true;
-				}else{
-					Player player = (Player) sender;
-					ItemStack handItem = player.getItemInHand();
-					
-					handItem.setDurability((short) 10000);
-					
-					return true;
-				}
-			}
+//			// damage item in hand
+//			if(args[0].equals("damage")){
+//				if (!(sender instanceof Player)){
+//					sender.sendMessage("This command can only be run by a player.");
+//					return true;
+//				}else{
+//					Player player = (Player) sender;
+//					ItemStack handItem = player.getItemInHand();
+//					
+//					handItem.setDurability((short) 10000);
+//					
+//					return true;
+//				}
+//			}
 			
-			// powerup sword for testing purpose
-			if(args[0].equals("cheat")){
-				if (!(sender instanceof Player)){
-					sender.sendMessage("This command can only be run by a player.");
-					return true;
-				}else{
-					Player player = (Player) sender;
-					ItemStack handItem = player.getItemInHand();
-					
-					for(int i=0; i<Items.loreLength-1; i++)
-						Utilities.increaseLore(handItem, Items.lores.get(i), 999999);
-					
-					return true;
-				}
-			}
+//			// powerup sword for testing purpose
+//			if(args[0].equals("cheat")){
+//				if (!(sender instanceof Player)){
+//					sender.sendMessage("This command can only be run by a player.");
+//					return true;
+//				}else{
+//					Player player = (Player) sender;
+//					ItemStack handItem = player.getItemInHand();
+//					
+//					for(int i=0; i<Items.loreLength-1; i++)
+//						Utilities.increaseLore(handItem, Items.lores.get(i), 999999);
+//					
+//					return true;
+//				}
+//			}
 						
 			return false;
 		}

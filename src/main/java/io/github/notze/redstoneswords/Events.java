@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javafx.util.Pair;
 import io.github.notze.util.Items;
+import io.github.notze.util.Particle;
 import io.github.notze.util.Utilities;
 
 import org.bukkit.Effect;
@@ -152,6 +153,8 @@ public class Events implements Listener{
 				
 				player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, RedstoneSwords.respirationTime*20, 1));
 				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+				
 			}
 			
 			// scroll of rebirth
