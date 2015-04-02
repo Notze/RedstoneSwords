@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +43,46 @@ public class Events implements Listener{
 	int flightTimer;
 	Boolean oldStat;
 	
+	// scroll of rebirth eggs and entityIDs
+	enum spawnEggs {
+		Creeper(50, "Creeper"),
+		Skeleton(51, "Skeleton"),
+		Spider(52, "Spider"),
+		Zombie(54, "Zombie"),
+		Slime(55, "Slime"),
+		Ghast(56, "Ghast"),
+		Pigman(57, "Pigman"),
+		Enderman(58, "Enderman"),
+		CaveSpider(59, "Cave Spider"),
+		Silverfish(60, "Silverfish"),
+		Blaze(61, "Blaze"),
+		MagmaCube(62, "Magma Cube"),
+		Bat(65, "Bat"),
+		Witch(66, "Witch"),
+		Endermite(67, "Endermite"),
+		Guardian(68, "Guardian"),
+		Pig(90, "Pig"),
+		Sheep(91, "Sheep"),
+		Cow(92, "Cow"),
+		Chicken(93, "Chicken"),
+		Squid(94, "Squid"),
+		Wolf(95, "Wolf"),
+		Mooshroom(96, "Mooshroom"),
+		Ocelot(98, "Ocelot"),
+		Horse(100, "EntityHorse"),
+		Rabbit(101, "Rabbit"),
+		Villager(120, "Villager");
+		
+		private int id;
+		private String name;
+
+		private spawnEggs(int id, String name){
+			this.id = id;
+			this.name = name;
+		}
+	}
+	
+	
 	/**
 	 * nothing really
 	 * 
@@ -53,7 +94,44 @@ public class Events implements Listener{
 	}
 	
 	/**
-	 * adds a right-click effect to the redstone sword
+	 * Adds effects for items
+	 * 
+	 * @param e
+	 * 		PlayerInteractEntityEvent
+	 */
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent e){
+		Player player = e.getPlayer();
+		ItemStack handItem = player.getItemInHand();
+		
+		// scroll of rebirth
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRebirthName)))
+			if(e.getRightClicked() instanceof LivingEntity){
+				
+				LivingEntity mob = (LivingEntity) e.getRightClicked();
+				String mobName = mob.getType().getName();
+				for(spawnEggs egg : spawnEggs.values())
+					if(mobName.equals(egg.name)){
+									
+						decreaseStack(player, handItem);
+						Particle.smoke.apply(player, 0.2, 100, 1);
+						mob.remove();
+						player.getServer().dispatchCommand(
+								player.getServer().getConsoleSender(), 
+								"give "
+								+ player.getName() 
+								+ " spawn_egg 1 " 
+								+ egg.id
+						);
+						break;
+					}
+			}
+	}// end of PlayerInteractEntityEvent
+	
+	
+	/**
+	 * adds some effects as abilities for items
 	 * 
 	 * @param e
 	 * 		PlayerInteractEvent
@@ -157,19 +235,12 @@ public class Events implements Listener{
 				
 			}
 			
-			// scroll of rebirth
-			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRebirthName))){
-				
-				//TODO functionallity
-				
-				decreaseStack(player, handItem);
-			}
-			
 			// scroll of jumping
 			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollJumpName))){
 				
 				player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, RedstoneSwords.jumpTime*20, 5));
 				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
 			}
 			
 			// scroll of healing
@@ -177,6 +248,7 @@ public class Events implements Listener{
 				
 				player.setHealth(player.getMaxHealth());				
 				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
 			}
 			
 			// scroll of levitation
@@ -186,6 +258,7 @@ public class Events implements Listener{
 				oldStat = player.getAllowFlight();
 				player.setAllowFlight(true);
 				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
 				
 				new BukkitRunnable(){
 					public void run(){
@@ -212,6 +285,7 @@ public class Events implements Listener{
 				player.getWorld().playEffect(spawnLoc, Effect.BLAZE_SHOOT, 1);
 				
 				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
 			}
 			
 			// scroll of growth
@@ -246,6 +320,7 @@ public class Events implements Listener{
 					}
 				}		
 				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
 			}
 			
 			// franciska
@@ -282,7 +357,7 @@ public class Events implements Listener{
 			}
 			
 		}// end of right click block/air
-	}
+	}// end of playerInteractEvent
 	
 	@SuppressWarnings("deprecation")
 	private void decreaseStack(Player player, ItemStack handItem){

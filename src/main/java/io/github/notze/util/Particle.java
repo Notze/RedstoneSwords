@@ -55,6 +55,9 @@ public enum Particle {
 		
 		player.getServer().dispatchCommand(
 				player.getServer().getConsoleSender(), 
+				"gamerule sendCommandFeedback false");
+		player.getServer().dispatchCommand(
+				player.getServer().getConsoleSender(), 
 				"particle "
 				+ this.name + " " 
 				+ loc.getX() + " " 

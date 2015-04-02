@@ -165,10 +165,12 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 				return true;
 			}else{
 				
-				Location loc = ((Player)sender).getLocation();
-				int length = Integer.parseInt(args[0]);
-
-				generateCube(loc, length);
+				givePlayerSpawnEggs((Player) sender);
+				
+//				Location loc = ((Player)sender).getLocation();
+//				int length = Integer.parseInt(args[0]);
+//
+//				generateCube(loc, length);
 				
 			}
 		}
@@ -182,6 +184,10 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 	/**
 	 * test functions
 	 */
+	
+	public void givePlayerSpawnEggs(Player p){
+		p.getInventory().addItem(new ItemStack(Material.MONSTER_EGG));
+	}
 	
     public void generateCube(Location loc, int length) {
         // Set one corner of the cube to the given location.
