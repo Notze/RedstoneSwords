@@ -270,7 +270,7 @@ public class Events implements Listener{
 								if(nearbyEntity instanceof LivingEntity)
 									if(!(nearbyEntity == player)){ // don't hurt yourself!
 										LivingEntity nearbyLivingEntity = (LivingEntity) nearbyEntity;
-										nearbyLivingEntity.damage(mat.getValue());
+										nearbyLivingEntity.damage(mat.getValue(), player);
 										cancel(); // exit after one entity got hit
 									}
 						}
