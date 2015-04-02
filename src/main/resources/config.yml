@@ -1,32 +1,28 @@
 # You can set any Material for the redstone sword, e.g. 'STICK' will work
 # and will be indestructable. /rs destroy however will destroy it and give
 # you the stored experience back.
-swordMaterial: WOOD_SWORD
-
-redstone:
 
 # The amount of (stored) redstone to consum in case to activate the 
 # right-click ability. (Speed Boost)
-  boost: 5
-
-# enderpearl cost for teleport
-  teleport: 1
-
-# The amount of redstone to add when a redstone ore is consumed
-redstonOreAmount: 5
-
-# The multiplier for the speedboost. (right-click)
-speedBoost: 10
-
-# The multiplier for the duration of the speedboost. 2 equals 1sec.
-speedBoostTime: 1
-
-# The amount of experience to be consumed to increase the swords strengh.
-expFactor: 20
 
 # How much of the stored xp should be gave back to the player when the sword
 # breaks? 0 = nothing, 1 = 100%, 2 = 50%, 4 = 25%, ...
-reclaimExpFactor: 2
+
+
+sword:
+  material: WOOD_SWORD
+  redstonOreAmount: 5
+  reclaimExpFactor: 2
+  cost:
+    boost: 5
+    teleport: 1
+    exp: 20
+  multiplier:
+    boost: 10
+  duration:
+    boost: 1
+
+
 
 # True: If a item is repaired with its crafting material the enchantments
 # don't get lost.
@@ -37,3 +33,14 @@ keepEnchantmentsOnRepair: false
 # The radius in which a scroll of growth will take effect
 scroll:
   growthRadius: 4
+  flightTime: 10
+  jumpTime: 10
+  respirationTime: 120
+  
+# Damage dealt by a thrown Axe
+thrownAxeDamage:
+  wood: 7
+  stone: 8
+  iron: 9
+  gold: 7
+  diamond: 10

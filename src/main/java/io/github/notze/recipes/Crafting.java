@@ -1,5 +1,9 @@
 package io.github.notze.recipes;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.util.Pair;
 import io.github.notze.redstoneswords.RedstoneSwords;
 import io.github.notze.util.Items;
 import io.github.notze.util.Utilities;
@@ -28,27 +32,29 @@ public class Crafting implements Listener {
 	 * @param redstoneSwords
 	 * 		reference to main class
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "serial" })
 	public Crafting(RedstoneSwords redstoneSwords){
 		this.redstoneSwords = redstoneSwords;
 		
-		// scroll of growth
-		ItemStack scrollCrop= Items.getScrollCrop();
-		redstoneSwords.getServer().addRecipe(
-				new ShapelessRecipe(scrollCrop)
-				.addIngredient(Material.PAPER)
-				.addIngredient(Material.INK_SACK)
-				.addIngredient(Material.FEATHER)
-				.addIngredient(Material.WHEAT));
+		List<Pair<String,Material>> scrolls = new ArrayList<Pair<String,Material>>(){{
+			add(new Pair<String,Material>(Items.scrollFireballName, Material.SULPHUR));
+			add(new Pair<String,Material>(Items.scrollCropName, Material.WHEAT));
+			add(new Pair<String,Material>(Items.scrollLevitationName, Material.FEATHER));
+			add(new Pair<String,Material>(Items.scrollJumpName, Material.SLIME_BALL));
+			add(new Pair<String,Material>(Items.scrollRespirationName, Material.RAW_FISH));
+			add(new Pair<String,Material>(Items.scrollRebirthName, Material.EGG));
+			add(new Pair<String,Material>(Items.scrollHealName, Material.APPLE));
+		}};
 		
-		// scroll of fireball
-		ItemStack scrollFireball = Items.getScrollFireball();
-		redstoneSwords.getServer().addRecipe(
-				new ShapelessRecipe(scrollFireball)
-				.addIngredient(Material.PAPER)
-				.addIngredient(Material.INK_SACK)
-				.addIngredient(Material.FEATHER)
-				.addIngredient(Material.SULPHUR));
+		for(Pair<String,Material> scroll : scrolls){
+			ItemStack scrollItem = Items.getScroll(scroll.getKey());
+			redstoneSwords.getServer().addRecipe(
+					new ShapelessRecipe(scrollItem)
+					.addIngredient(Material.PAPER)
+					.addIngredient(Material.INK_SACK)
+					.addIngredient(Material.FEATHER)
+					.addIngredient(scroll.getValue()));
+		}
 		
 		// crafting the redstone sword
 		ItemStack rsword = Items.getInitSword();

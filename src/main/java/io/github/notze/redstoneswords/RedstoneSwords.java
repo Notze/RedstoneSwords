@@ -13,7 +13,9 @@ public final class RedstoneSwords extends JavaPlugin {
 	static FileConfiguration config;
 	public static Material swordMaterial;
 	public static int boostCost, teleportCost, redstoneOreAmount, speedBoost, 
-	speedBoostTime, expFactor, reclaimExpFactor, growthRadius;
+	speedBoostTime, expFactor, reclaimExpFactor, growthRadius, woodAxeDmg, 
+	stoneAxeDmg, ironAxeDmg, goldAxeDmg, diamondAxeDmg, flightTime, jumpTime,
+	respirationTime;
 	public static boolean keepEnchantmentsOnRepair;
 	
 	@SuppressWarnings("unused")
@@ -48,16 +50,26 @@ public final class RedstoneSwords extends JavaPlugin {
 		this.saveDefaultConfig();
 		config = getConfig();
 
-		swordMaterial = Material.getMaterial(config.getString("swordMaterial"));
-		boostCost = config.getInt("redstone.boost");
-		teleportCost = config.getInt("redstone.teleport");
-		redstoneOreAmount =  config.getInt("redstoneOreAmount");
-		speedBoost =  config.getInt("speedBoost");
-		speedBoostTime =  config.getInt("speedBoostTime");
-		expFactor =  config.getInt("expFactor");
+		swordMaterial = Material.getMaterial(config.getString("sword.material"));
+		boostCost = config.getInt("sword.cost.boost");
+		teleportCost = config.getInt("sword.cost.teleport");
+		redstoneOreAmount =  config.getInt("sword.redstoneOreAmount");
+		speedBoost =  config.getInt("sword.multiplier.boost");
+		speedBoostTime =  config.getInt("sword.duration.boost");
+		expFactor =  config.getInt("sword.cost.exp");
 		reclaimExpFactor =  config.getInt("reclaimExpFactor");
 		keepEnchantmentsOnRepair =  config.getBoolean("keepEnchantmentsOnRepair");
+		
 		growthRadius = config.getInt("scroll.growthRadius");
+		flightTime = config.getInt("scroll.flightTime");
+		jumpTime = config.getInt("scroll.jumpTime");
+		respirationTime = config.getInt("scroll.respirationTime");
+		
+		woodAxeDmg = config.getInt("thrownAxeDamage.wood");
+		stoneAxeDmg = config.getInt("thrownAxeDamage.stone");
+		ironAxeDmg = config.getInt("thrownAxeDamage.iron");
+		goldAxeDmg = config.getInt("thrownAxeDamage.gold");
+		diamondAxeDmg = config.getInt("thrownAxeDamage.diamond");
 	}
 	
 }
