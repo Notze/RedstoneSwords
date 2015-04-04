@@ -67,8 +67,5 @@ public enum Particle {
 				+ amount + " "
 				+ range
 		);
-		player.getServer().dispatchCommand(
-				player.getServer().getConsoleSender(), 
-				"gamerule sendCommandFeedback true");
 	}
 }
