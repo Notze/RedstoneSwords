@@ -43,6 +43,12 @@ public class Events implements Listener{
 	int flightTimer;
 	Boolean oldStat;
 	
+	// the player
+	Player player = null;
+	
+	// item player holds
+	ItemStack handItem = null;
+	
 	// scroll of rebirth eggs and entityIDs
 	enum spawnEggs {
 		Creeper(50, "Creeper"),
@@ -94,18 +100,51 @@ public class Events implements Listener{
 	}
 	
 	/**
+	 * adds some effects as abilities for items
+	 * 
+	 * @param e
+	 * 		PlayerInteractEvent
+	 */
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent e){
+		player = e.getPlayer();
+		handItem = player.getItemInHand();
+		
+		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+			
+			consumeRedstoneOre(e);
+			
+		}else if(e.getAction().equals(Action.RIGHT_CLICK_AIR)){
+			
+			swordAbilities(e);
+		
+		}
+		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)
+				|| e.getAction().equals(Action.RIGHT_CLICK_AIR)){
+			
+			scrolls(e);
+			franciska(e);
+		
+		}
+	}
+	
+	/**
 	 * Adds effects for items
 	 * 
 	 * @param e
 	 * 		PlayerInteractEntityEvent
 	 */
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e){
-		Player player = e.getPlayer();
-		ItemStack handItem = player.getItemInHand();
+		player = e.getPlayer();
+		handItem = player.getItemInHand();
 		
-		// scroll of rebirth
+		scrollOfRebirth(e);
+		
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void scrollOfRebirth(PlayerInteractEntityEvent e){
 		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRebirthName)))
 			if(e.getRightClicked() instanceof LivingEntity){
 				
@@ -127,237 +166,219 @@ public class Events implements Listener{
 						break;
 					}
 			}
-	}// end of PlayerInteractEntityEvent
+	}
 	
-	
-	/**
-	 * adds some effects as abilities for items
-	 * 
-	 * @param e
-	 * 		PlayerInteractEvent
-	 */
-	@SuppressWarnings({ "deprecation", "serial" })
-	@EventHandler
-	public void onPlayerInteract(PlayerInteractEvent e){
-		final Player player = e.getPlayer();
-		ItemStack handItem = player.getItemInHand();
-		
-		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-			if(Utilities.isRedstoneSword(handItem)){
-				
-				Block b = e.getClickedBlock();
-				if(b.getType().equals(Material.REDSTONE_ORE) || b.getType().equals(Material.GLOWING_REDSTONE_ORE)){
-					b.setType(Material.AIR);
-					Utilities.increaseLore(handItem, Items.redstoneLore, RedstoneSwords.redstoneOreAmount);
-					e.setCancelled(true); // normally redstone changes to glowing redstone after right click
-				}
-				
+	private void consumeRedstoneOre(PlayerInteractEvent e){
+		if(Utilities.isRedstoneSword(handItem)){
+			Block b = e.getClickedBlock();
+			if(b.getType().equals(Material.REDSTONE_ORE) || b.getType().equals(Material.GLOWING_REDSTONE_ORE)){
+				b.setType(Material.AIR);
+				Utilities.increaseLore(handItem, Items.redstoneLore, RedstoneSwords.redstoneOreAmount);
+				e.setCancelled(true); // normally redstone changes to glowing redstone after right click
+				return;
 			}
-		}// end of right click block
-		
-		if(e.getAction().equals(Action.RIGHT_CLICK_AIR)){
+		}
+	}
+	
+	private void swordAbilities(PlayerInteractEvent e){
+		if(Utilities.isRedstoneSword(handItem)){
+			String mode = Utilities.getLoreValueAsString(handItem, Items.modeLore);
 			
-			// sword ability
-			if(Utilities.isRedstoneSword(handItem)){
-				String mode = Utilities.getLoreValueAsString(handItem, Items.modeLore);
+			// change mode
+			if(player.isSneaking()){
 				
-				// change mode
-				if(player.isSneaking()){
+				ItemMeta im = handItem.getItemMeta();
+				String nextMode = null;
+				List<String> lores = im.getLore();
+				List<String> newLores = new ArrayList<String>(Items.loreLength);
+				
+				// find next mode
+				Iterator<String> it = Items.modes.iterator();
+				while(it.hasNext())
+					if(it.next().equals(mode) && it.hasNext())
+						nextMode = it.next();
+				if(nextMode == null) nextMode = Items.modes.get(0);
+				
+				// set next mode
+				for(String lore : lores){
+					if(lore.contains(Items.modeLore)){
+						newLores.add(Items.modeLore + nextMode);
+					}else{
+						newLores.add(lore);
+					}
+				}
+				im.setLore(newLores);
+				handItem.setItemMeta(im);
+				player.sendMessage("[Mode] " + nextMode);
+				
+			}else if(mode.equals(Items.teleportModeLore)){
+				// teleport
+				Block b = player.getTargetBlock((Set<Material>) null, 200);
+				if(b.getType().equals(Material.AIR)) return;
+				Location loc = b.getLocation();
+				Vector offset = new Vector(0.5,1,0.5);
+				Location target = loc.clone().add(offset);
+				
+				// make shure that there is enough space for the player
+				for(int i=1; i<=2; i++)
+					if(loc.add(new Vector(0,1,0)).getBlock().getType() != Material.AIR)
+						return;
+				
+				int rest = Utilities.increaseLore(handItem, Items.enderLore, -RedstoneSwords.teleportCost);
+				if(rest != -1){
+					player.teleport(target.setDirection(player.getLocation().getDirection()));
+				}else{
+					player.sendMessage("Not enough enderpearls!");
+				}
+			}else if(mode.equals(Items.boostModeLore)){
+				// boost
+				int rest = Utilities.increaseLore(handItem, Items.redstoneLore, -RedstoneSwords.boostCost);
+				if(rest != -1){
+					player.addPotionEffect(new PotionEffect(
+							PotionEffectType.SPEED, 
+							RedstoneSwords.speedBoostTime*10, 
+							RedstoneSwords.speedBoost*10));
+				}else{
+					player.sendMessage("Not enough redstone!");
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void scrolls(PlayerInteractEvent e){
+		// scroll of respiration
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRespirationName))){
+			
+			player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, RedstoneSwords.respirationTime*20, 1));
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+			
+		}
+		
+		// scroll of jumping
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollJumpName))){
+			
+			player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, RedstoneSwords.jumpTime*20, 5));
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+		}
+		
+		// scroll of healing
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollHealName))){
+			
+			player.setHealth(player.getMaxHealth());				
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+		}
+		
+		// scroll of levitation
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollLevitationName))){
+			
+			flightTimer = RedstoneSwords.flightTime;
+			oldStat = player.getAllowFlight();
+			player.setAllowFlight(true);
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+			
+			new BukkitRunnable(){
+				public void run(){
 					
-					ItemMeta im = handItem.getItemMeta();
-					String nextMode = null;
-					List<String> lores = im.getLore();
-					List<String> newLores = new ArrayList<String>(Items.loreLength);
-					
-					// find next mode
-					Iterator<String> it = Items.modes.iterator();
-					while(it.hasNext())
-						if(it.next().equals(mode) && it.hasNext())
-							nextMode = it.next();
-					if(nextMode == null) nextMode = Items.modes.get(0);
-					
-					// set next mode
-					for(String lore : lores){
-						if(lore.contains(Items.modeLore)){
-							newLores.add(Items.modeLore + nextMode);
-						}else{
-							newLores.add(lore);
+					if(flightTimer==0){
+						player.setFlying(false);
+						player.setAllowFlight(oldStat);
+						cancel();
+					}else{
+						player.setFlying(true);
+						player.sendMessage("Levitation wears off in " + flightTimer + " seconds.");
+						flightTimer--;
+					}
+				}
+			}.runTaskTimer(redstoneSwords, 0, 20);
+		}
+		
+		// scroll of fireball
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollFireballName))){
+			
+			Vector offset = player.getLocation().getDirection().multiply(2);
+			Location spawnLoc = player.getEyeLocation().add(offset);
+			player.getWorld().spawn(spawnLoc, Fireball.class);
+			player.getWorld().playEffect(spawnLoc, Effect.BLAZE_SHOOT, 1);
+			
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+		}
+		
+		// scroll of growth
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollCropName))){
+			
+			Location loc = player.getLocation();
+			
+			int r = RedstoneSwords.growthRadius;
+			int h = 1;
+
+			int x1 = loc.getBlockX()-r;
+			int y1 = loc.getBlockY()-h;
+			int z1 = loc.getBlockZ()-r;
+
+			int x2 = loc.getBlockX()+r;
+			int y2 = loc.getBlockY()+h;
+			int z2 = loc.getBlockZ()+r;
+			
+			for(int i=x1; i<=x2; i++){
+				for(int j=y1; j<=y2; j++){
+					for(int k=z1; k<=z2; k++){
+			
+						Block b = player.getWorld().getBlockAt(i, j, k);
+						if(b.getTypeId() == 59){ // id of wheat
+							b.setTypeIdAndData(59, (byte) 7, false);
+						}else if(b.getTypeId() == 141){ // id of carrots
+							b.setTypeIdAndData(141, (byte) 7, false);
+						}else if(b.getTypeId() == 142){ // id of potatoes
+							b.setTypeIdAndData(142, (byte) 7, false);
 						}
 					}
-					im.setLore(newLores);
-					handItem.setItemMeta(im);
-					player.sendMessage("[Mode] " + nextMode);
-					
-				}else if(mode.equals(Items.teleportModeLore)){
-					// teleport
-					Block b = player.getTargetBlock((Set<Material>) null, 200);
-					if(b.getType().equals(Material.AIR)) return;
-					Location loc = b.getLocation();
-					Vector offset = new Vector(0.5,1,0.5);
-					Location target = loc.clone().add(offset);
-					
-					// make shure that there is enough space for the player
-					for(int i=1; i<=2; i++)
-						if(loc.add(new Vector(0,1,0)).getBlock().getType() != Material.AIR)
-							return;
-					
-					int rest = Utilities.increaseLore(handItem, Items.enderLore, -RedstoneSwords.teleportCost);
-					if(rest != -1){
-						player.teleport(target.setDirection(player.getLocation().getDirection()));
-					}else{
-						player.sendMessage("Not enough enderpearls!");
-					}
-				}else if(mode.equals(Items.boostModeLore)){
-					// boost
-					int rest = Utilities.increaseLore(handItem, Items.redstoneLore, -RedstoneSwords.boostCost);
-					if(rest != -1){
-						player.addPotionEffect(new PotionEffect(
-								PotionEffectType.SPEED, 
-								RedstoneSwords.speedBoostTime*10, 
-								RedstoneSwords.speedBoost*10));
-					}else{
-						player.sendMessage("Not enough redstone!");
-					}
 				}
-			}
-			
-		}// end of right click air
-		
-		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)
-				|| e.getAction().equals(Action.RIGHT_CLICK_AIR)){
-			
-			// scroll of respiration
-			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRespirationName))){
+			}		
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private void franciska(PlayerInteractEvent e){
+		List<Pair<Material,Integer>> mats = new ArrayList<Pair<Material,Integer>>(){{
+			add(new Pair<Material,Integer>(Material.WOOD_AXE, RedstoneSwords.woodAxeDmg));
+			add(new Pair<Material,Integer>(Material.IRON_AXE, RedstoneSwords.stoneAxeDmg));
+			add(new Pair<Material,Integer>(Material.GOLD_AXE, RedstoneSwords.goldAxeDmg));
+			add(new Pair<Material,Integer>(Material.DIAMOND_AXE, RedstoneSwords.diamondAxeDmg));
+		}};
+		for(final Pair<Material,Integer> mat : mats){
+			if(handItem.getType() == mat.getKey()){
+				Location loc = player.getEyeLocation();
+				Vector direction = loc.getDirection().multiply(1.1D); // get direction and flying speed
 				
-				player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, RedstoneSwords.respirationTime*20, 1));
+				final Item drop = player.getWorld().dropItem(loc, handItem);
+				drop.setVelocity(direction);
+				
 				decreaseStack(player, handItem);
-				Particle.smoke.apply(player, 0.2, 100, 1);
-				
-			}
-			
-			// scroll of jumping
-			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollJumpName))){
-				
-				player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, RedstoneSwords.jumpTime*20, 5));
-				decreaseStack(player, handItem);
-				Particle.smoke.apply(player, 0.2, 100, 1);
-			}
-			
-			// scroll of healing
-			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollHealName))){
-				
-				player.setHealth(player.getMaxHealth());				
-				decreaseStack(player, handItem);
-				Particle.smoke.apply(player, 0.2, 100, 1);
-			}
-			
-			// scroll of levitation
-			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollLevitationName))){
-				
-				flightTimer = RedstoneSwords.flightTime;
-				oldStat = player.getAllowFlight();
-				player.setAllowFlight(true);
-				decreaseStack(player, handItem);
-				Particle.smoke.apply(player, 0.2, 100, 1);
 				
 				new BukkitRunnable(){
+					@Override
 					public void run(){
-						
-						if(flightTimer==0){
-							player.setFlying(false);
-							player.setAllowFlight(oldStat);
-							cancel();
-						}else{
-							player.setFlying(true);
-							player.sendMessage("Levitation wears off in " + flightTimer + " seconds.");
-							flightTimer--;
-						}
+						if(drop.isOnGround()) cancel(); // only deal dmg with impact
+						for(Entity nearbyEntity : drop.getNearbyEntities(0,0,0)) // only affect exactly hit enemies 
+							if(nearbyEntity instanceof LivingEntity)
+								if(!(nearbyEntity == player)){ // don't hurt yourself!
+									LivingEntity nearbyLivingEntity = (LivingEntity) nearbyEntity;
+									nearbyLivingEntity.damage(mat.getValue(), player);
+									cancel(); // exit after one entity got hit
+								}
 					}
-				}.runTaskTimer(redstoneSwords, 0, 20);
+				}.runTaskTimer(redstoneSwords, 0, 1); // start immediately since you can't hurt yourself
 			}
-			
-			// scroll of fireball
-			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollFireballName))){
-				
-				Vector offset = player.getLocation().getDirection().multiply(2);
-				Location spawnLoc = player.getEyeLocation().add(offset);
-				player.getWorld().spawn(spawnLoc, Fireball.class);
-				player.getWorld().playEffect(spawnLoc, Effect.BLAZE_SHOOT, 1);
-				
-				decreaseStack(player, handItem);
-				Particle.smoke.apply(player, 0.2, 100, 1);
-			}
-			
-			// scroll of growth
-			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollCropName))){
-				
-				Location loc = player.getLocation();
-				
-				int r = RedstoneSwords.growthRadius;
-				int h = 1;
-	
-				int x1 = loc.getBlockX()-r;
-				int y1 = loc.getBlockY()-h;
-				int z1 = loc.getBlockZ()-r;
-	
-				int x2 = loc.getBlockX()+r;
-				int y2 = loc.getBlockY()+h;
-				int z2 = loc.getBlockZ()+r;
-				
-				for(int i=x1; i<=x2; i++){
-					for(int j=y1; j<=y2; j++){
-						for(int k=z1; k<=z2; k++){
-				
-							Block b = player.getWorld().getBlockAt(i, j, k);
-							if(b.getTypeId() == 59){ // id of wheat
-								b.setTypeIdAndData(59, (byte) 7, false);
-							}else if(b.getTypeId() == 141){ // id of carrots
-								b.setTypeIdAndData(141, (byte) 7, false);
-							}else if(b.getTypeId() == 142){ // id of potatoes
-								b.setTypeIdAndData(142, (byte) 7, false);
-							}
-						}
-					}
-				}		
-				decreaseStack(player, handItem);
-				Particle.smoke.apply(player, 0.2, 100, 1);
-			}
-			
-			// franciska
-			List<Pair<Material,Integer>> mats = new ArrayList<Pair<Material,Integer>>(){{
-				add(new Pair<Material,Integer>(Material.WOOD_AXE, RedstoneSwords.woodAxeDmg));
-				add(new Pair<Material,Integer>(Material.IRON_AXE, RedstoneSwords.stoneAxeDmg));
-				add(new Pair<Material,Integer>(Material.GOLD_AXE, RedstoneSwords.goldAxeDmg));
-				add(new Pair<Material,Integer>(Material.DIAMOND_AXE, RedstoneSwords.diamondAxeDmg));
-			}};
-			for(final Pair<Material,Integer> mat : mats){
-				if(handItem.getType() == mat.getKey()){
-					Location loc = player.getEyeLocation();
-					Vector direction = loc.getDirection().multiply(1.1D); // get direction and flying speed
-					
-					final Item drop = player.getWorld().dropItem(loc, handItem);
-					drop.setVelocity(direction);
-					
-					decreaseStack(player, handItem);
-					
-					new BukkitRunnable(){
-						@Override
-						public void run(){
-							if(drop.isOnGround()) cancel(); // only deal dmg with impact
-							for(Entity nearbyEntity : drop.getNearbyEntities(0,0,0)) // only affect exactly hit enemies 
-								if(nearbyEntity instanceof LivingEntity)
-									if(!(nearbyEntity == player)){ // don't hurt yourself!
-										LivingEntity nearbyLivingEntity = (LivingEntity) nearbyEntity;
-										nearbyLivingEntity.damage(mat.getValue(), player);
-										cancel(); // exit after one entity got hit
-									}
-						}
-					}.runTaskTimer(redstoneSwords, 0, 1); // start immediately since you can't hurt yourself
-				}
-			}
-			
-		}// end of right click block/air
-	}// end of playerInteractEvent
+		}
+	}
 	
 	@SuppressWarnings("deprecation")
 	private void decreaseStack(Player player, ItemStack handItem){
