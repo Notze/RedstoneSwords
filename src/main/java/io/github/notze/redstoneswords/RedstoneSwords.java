@@ -15,7 +15,7 @@ public final class RedstoneSwords extends JavaPlugin {
 	public static int boostCost, teleportCost, redstoneOreAmount, speedBoost, 
 	speedBoostTime, expFactor, reclaimExpFactor, growthRadius, woodAxeDmg, 
 	stoneAxeDmg, ironAxeDmg, goldAxeDmg, diamondAxeDmg, flightTime, jumpTime,
-	respirationTime;
+	respirationTime, torchFireTime;
 	public static boolean keepEnchantmentsOnRepair;
 	
 	@SuppressWarnings("unused")
@@ -59,6 +59,7 @@ public final class RedstoneSwords extends JavaPlugin {
 		expFactor =  config.getInt("sword.cost.exp");
 		reclaimExpFactor =  config.getInt("reclaimExpFactor");
 		keepEnchantmentsOnRepair =  config.getBoolean("keepEnchantmentsOnRepair");
+		torchFireTime = config.getInt("torchFireTime");
 		
 		growthRadius = config.getInt("scroll.growthRadius");
 		flightTime = config.getInt("scroll.flightTime");

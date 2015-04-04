@@ -4,6 +4,9 @@
 # redstone sword)
 keepEnchantmentsOnRepair: false
 
+# How long should mobs burn when hit with a torch (in seconds)
+torchFireTime: 1
+
 sword:
   # You can set any Material for the redstone sword, e.g. 'STICK' will work
   # and will be indestructable. /rs destroy however will destroy it and give

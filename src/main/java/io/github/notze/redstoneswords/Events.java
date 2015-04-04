@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -172,6 +173,24 @@ public class Events implements Listener{
 	}
 	
 	/**
+	 * Adds effects for items
+	 * 
+	 * @param e
+	 * 		EntityDamageByEntityEvent
+	 */
+	@EventHandler
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent e){
+		if(e.getDamager() instanceof Player){
+		
+			player = (Player) e.getDamager();
+			handItem = player.getItemInHand();
+			
+			torch(e);
+			
+		}
+	}
+	
+	/**
 	 * let the redstone sword consume experience
 	 * 
 	 * @param e
@@ -181,7 +200,7 @@ public class Events implements Listener{
 	public void onPlayerExpChange(PlayerExpChangeEvent e){
 		
 		// check if player is holding the redstone sword
-		ItemStack handItem = e.getPlayer().getItemInHand();
+		handItem = e.getPlayer().getItemInHand();
 		if(Utilities.isRedstoneSword(handItem)){
 			int value = Utilities.increaseLore(handItem, Items.expLore, 0);
 			if(value < e.getPlayer().getTotalExperience()){
@@ -202,12 +221,34 @@ public class Events implements Listener{
 	 */
 	@EventHandler
 	public void onPlayerItemBreak(PlayerItemBreakEvent e){
-		Player player = e.getPlayer();
-		ItemStack handItem = player.getItemInHand();
+		player = e.getPlayer();
+		handItem = player.getItemInHand();
 		
 		Utilities.destroyRedstoneSword(player, handItem);
 	}
 	
+	/**
+	 * Set mobs on fire when hit with a torch
+	 * 
+	 * @param e
+	 * 		PlayerInteractEntityEvent
+	 */
+	private void torch(EntityDamageByEntityEvent e){
+		if(handItem.getType().equals(Material.TORCH)){
+			if(e.getEntity() instanceof LivingEntity){
+				((LivingEntity) e.getEntity()).setFireTicks(20 * RedstoneSwords.torchFireTime);
+			}
+		}
+	}
+	
+	/**
+	 * Check if the clicked block has a usage
+	 * 
+	 * @param b
+	 * 		Block 
+	 * @return
+	 * 		true if block has usage e.g. a button
+	 */
 	private boolean isUsableBlock(Block b){
 		if(b == null) return false; // air block causes nullpointerexception in next step
 		Material m = b.getType();
