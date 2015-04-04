@@ -116,7 +116,7 @@ public class Events implements Listener{
 			
 		}else if(e.getAction().equals(Action.RIGHT_CLICK_AIR)){
 			
-			swordAbilities(e);
+			
 		
 		}
 		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)
@@ -124,6 +124,7 @@ public class Events implements Listener{
 			
 			scrolls(e);
 			franciska(e);
+			swordAbilities(e);
 		
 		}
 	}
