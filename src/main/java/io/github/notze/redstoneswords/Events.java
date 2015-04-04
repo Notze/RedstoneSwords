@@ -209,6 +209,7 @@ public class Events implements Listener{
 	}
 	
 	private boolean isUsableBlock(Block b){
+		if(b == null) return false; // air block causes nullpointerexception in next step
 		Material m = b.getType();
 		for(Material mat : usables)
 			if(mat.equals(m))
