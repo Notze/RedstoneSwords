@@ -88,6 +88,30 @@ public class Events implements Listener{
 		}
 	}
 	
+	@SuppressWarnings("serial")
+	List<Material> usables = new ArrayList<Material>(){{
+		add(Material.CHEST);
+		add(Material.STONE_BUTTON);
+		add(Material.WOOD_BUTTON);
+		add(Material.LEVER);
+		add(Material.ENCHANTMENT_TABLE);
+		add(Material.WORKBENCH);
+		add(Material.FURNACE);
+		add(Material.BURNING_FURNACE);
+		add(Material.ANVIL);
+		add(Material.ACACIA_DOOR);
+		add(Material.BIRCH_DOOR);
+		add(Material.DARK_OAK_DOOR);
+		add(Material.IRON_DOOR);
+		add(Material.JUNGLE_DOOR);
+		add(Material.SPRUCE_DOOR);
+		add(Material.TRAP_DOOR);
+		add(Material.WOOD_DOOR);
+		add(Material.WOODEN_DOOR);
+		add(Material.REDSTONE_COMPARATOR);
+		add(Material.DIODE);
+	}};
+	
 	
 	/**
 	 * nothing really
@@ -123,6 +147,10 @@ public class Events implements Listener{
 				|| e.getAction().equals(Action.RIGHT_CLICK_AIR)){
 			
 			scrolls(e);
+			
+			if(isUsableBlock(e.getClickedBlock()))
+				return;
+				
 			franciska(e);
 			swordAbilities(e);
 		
@@ -140,8 +168,53 @@ public class Events implements Listener{
 		player = e.getPlayer();
 		handItem = player.getItemInHand();
 		
-		scrollOfRebirth(e);
+		scrollOfRebirth(e);	
+	}
+	
+	/**
+	 * let the redstone sword consume experience
+	 * 
+	 * @param e
+	 * 		PlayerExpChangeEvent
+	 */
+	@EventHandler
+	public void onPlayerExpChange(PlayerExpChangeEvent e){
 		
+		// check if player is holding the redstone sword
+		ItemStack handItem = e.getPlayer().getItemInHand();
+		if(Utilities.isRedstoneSword(handItem)){
+			int value = Utilities.increaseLore(handItem, Items.expLore, 0);
+			if(value < e.getPlayer().getTotalExperience()){
+				value = Utilities.increaseLore(handItem, Items.expLore, e.getAmount());
+				e.setAmount(0); // no xp for the player
+				int newLevel = toLevel(value,0);
+				Utilities.setLore(handItem, Items.lvlLore, newLevel);
+				handItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, Math.floorDiv(newLevel,RedstoneSwords.expFactor));
+			}
+		}
+	}
+	
+	/**
+	 * give back experience when the sword breaks
+	 * 
+	 * @param e
+	 * 		PlayerItemBreakEvent
+	 */
+	@EventHandler
+	public void onPlayerItemBreak(PlayerItemBreakEvent e){
+		Player player = e.getPlayer();
+		ItemStack handItem = player.getItemInHand();
+		
+		Utilities.destroyRedstoneSword(player, handItem);
+	}
+	
+	private boolean isUsableBlock(Block b){
+		Material m = b.getType();
+		for(Material mat : usables)
+			if(mat.equals(m))
+				return true;
+		
+		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -399,29 +472,6 @@ public class Events implements Listener{
 	}
 	
 	/**
-	 * let the redstone sword consume experience
-	 * 
-	 * @param e
-	 * 		PlayerExpChangeEvent
-	 */
-	@EventHandler
-	public void onPlayerExpChange(PlayerExpChangeEvent e){
-		
-		// check if player is holding the redstone sword
-		ItemStack handItem = e.getPlayer().getItemInHand();
-		if(Utilities.isRedstoneSword(handItem)){
-			int value = Utilities.increaseLore(handItem, Items.expLore, 0);
-			if(value < e.getPlayer().getTotalExperience()){
-				value = Utilities.increaseLore(handItem, Items.expLore, e.getAmount());
-				e.setAmount(0); // no xp for the player
-				int newLevel = toLevel(value,0);
-				Utilities.setLore(handItem, Items.lvlLore, newLevel);
-				handItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, Math.floorDiv(newLevel,RedstoneSwords.expFactor));
-			}
-		}
-	}
-	
-	/**
 	 * calculate the level by total xp (vanilla formular)
 	 * 
 	 * @param total
@@ -444,18 +494,7 @@ public class Events implements Listener{
         return toLevel(total-need, level+1);
     }
 	
-	/**
-	 * give back experience when the sword breaks
-	 * 
-	 * @param e
-	 * 		PlayerItemBreakEvent
-	 */
-	@EventHandler
-	public void onPlayerItemBreak(PlayerItemBreakEvent e){
-		Player player = e.getPlayer();
-		ItemStack handItem = player.getItemInHand();
-		
-		Utilities.destroyRedstoneSword(player, handItem);
-	}
+	
+	
 	
 }
