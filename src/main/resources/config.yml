@@ -51,6 +51,9 @@ scroll:
   # time limit for underwater breathing in seconds
   respirationTime: 120
   
+  # time limit for water walking in seconds
+  waterWalkTime: 120
+  
 # Damage dealt by a thrown Axe in half hearts
 thrownAxeDamage:
   wood: 7

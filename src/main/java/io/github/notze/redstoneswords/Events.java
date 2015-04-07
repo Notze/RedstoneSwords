@@ -41,8 +41,9 @@ public class Events implements Listener{
 	RedstoneSwords redstoneSwords;
 	
 	// scroll timers and variables
-	int flightTimer;
+	int flightTimer, waterWalkTimer;
 	Boolean oldStat;
+	Block last;
 	
 	// the player
 	Player player = null;
@@ -89,6 +90,7 @@ public class Events implements Listener{
 		}
 	}
 	
+	// list of items that can be right-clicked without any ability activations
 	@SuppressWarnings("serial")
 	List<Material> usables = new ArrayList<Material>(){{
 		add(Material.CHEST);
@@ -169,7 +171,7 @@ public class Events implements Listener{
 		player = e.getPlayer();
 		handItem = player.getItemInHand();
 		
-		scrollOfRebirth(e);	
+		scrollsOnEntity(e);	
 	}
 	
 	/**
@@ -260,7 +262,8 @@ public class Events implements Listener{
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void scrollOfRebirth(PlayerInteractEntityEvent e){
+	private void scrollsOnEntity(PlayerInteractEntityEvent e){
+		// scroll of rebirth
 		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRebirthName)))
 			if(e.getRightClicked() instanceof LivingEntity){
 				
@@ -282,6 +285,9 @@ public class Events implements Listener{
 						break;
 					}
 			}
+		// TODO
+		// scroll of command
+		// scroll of poison
 	}
 	
 	private void consumeRedstoneOre(PlayerInteractEvent e){
@@ -391,7 +397,7 @@ public class Events implements Listener{
 		// scroll of levitation
 		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollLevitationName))){
 			
-			flightTimer = RedstoneSwords.flightTime;
+			flightTimer = RedstoneSwords.flightTime*20;
 			oldStat = player.getAllowFlight();
 			player.setAllowFlight(true);
 			decreaseStack(player, handItem);
@@ -406,11 +412,12 @@ public class Events implements Listener{
 						cancel();
 					}else{
 						player.setFlying(true);
-						player.sendMessage("Levitation wears off in " + flightTimer + " seconds.");
+						if(flightTimer%20 == 0)
+							player.sendMessage("Levitation wears off in " + flightTimer/20 + " seconds.");
 						flightTimer--;
 					}
 				}
-			}.runTaskTimer(redstoneSwords, 0, 20);
+			}.runTaskTimer(redstoneSwords, 0, 1);
 		}
 		
 		// scroll of fireball
@@ -459,6 +466,63 @@ public class Events implements Listener{
 			decreaseStack(player, handItem);
 			Particle.smoke.apply(player, 0.2, 100, 1);
 		}
+		
+		// scroll of bound sword
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollBoundSwordName))){
+			// TODO
+			// give player sword with unique id
+			// remove sword after delay (even from inventory or laying around or stored in a chest etc.)
+		}
+		
+		// scroll of water walking
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollWaterName))){
+			waterWalkTimer = RedstoneSwords.waterWalkTime*20;
+			last = player.getLocation().getBlock();
+			
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+			
+			new BukkitRunnable(){
+				public void run(){
+					
+					if(waterWalkTimer%200 == 0)
+						player.sendMessage("Water walking wears off in " + waterWalkTimer/20 + " seconds.");
+					
+					waterWalkTimer--;
+					if(waterWalkTimer <= 0)
+						cancel();
+					
+					Location loc = player.getLocation();
+					if(last!=null && (loc.getBlockX()!=last.getX() || loc.getBlockZ()!=last.getZ())){
+						last.setType(Material.AIR);
+					
+						Block feet = loc.getBlock();
+						Block underneath = loc.clone().add(0, -1, 0).getBlock();
+						Block above = loc.clone().add(0, 1, 0).getBlock();
+						
+						if(!above.getType().equals(Material.STATIONARY_WATER) ){// case player underwater
+							// case player swimming on surface
+							if(feet.getType().equals(Material.STATIONARY_WATER)){
+								above.setType(Material.WATER_LILY);
+								last=above;
+								player.teleport(loc.clone().add(0, 1.2, 0));// teleport onto lilypad
+							}else if(underneath.getType().equals(Material.STATIONARY_WATER)){ // case player above surface
+								feet.setType(Material.WATER_LILY);
+								last=feet;
+							}
+						}
+					}
+				}
+			}.runTaskTimer(redstoneSwords, 0, 1);
+		}
+		
+		//TODO
+		// scroll of recall
+		// scroll of shield
+		// scroll of night vision
+		// scroll of reflection
+		// scroll of telekinesis
+		// scroll of attack
 	}
 	
 	@SuppressWarnings("serial")

@@ -28,6 +28,16 @@ public final class Items{
 	public static String scrollRespirationName = "Scroll of Respiration";
 	public static String scrollRebirthName = "Scroll of Rebirth";
 	public static String scrollHealName = "Scroll of Healing";
+	public static String scrollWaterName = "Scroll of Water Walking";
+	public static String scrollRecallName = "Scroll of Recall";
+	public static String scrollShieldName = "Scroll of Shield";
+	public static String scrollBoundSwordName = "Scroll of Bound Sword";
+	public static String scrollCommandName = "Scroll of Commanding";
+	public static String scrollPoisonName = "Scroll of Poisoning";
+	public static String scrollNightVisionName = "Scroll of Night Eye";
+	public static String scrollReflectName = "Scroll of Reflection";
+	public static String scrollTelekinesisName = "Scroll of Telekinesis";
+	public static String scrollAttackName = "Scroll of Fortify Attack";
 	
 	// Scroll identification
 	@SuppressWarnings("serial")
@@ -39,6 +49,16 @@ public final class Items{
 		add(new Pair<String,Enchantment>(scrollRespirationName, Enchantment.DAMAGE_ALL));
 		add(new Pair<String,Enchantment>(scrollRebirthName, Enchantment.DAMAGE_ARTHROPODS));
 		add(new Pair<String,Enchantment>(scrollHealName, Enchantment.DAMAGE_UNDEAD));
+		add(new Pair<String,Enchantment>(scrollWaterName, Enchantment.DEPTH_STRIDER));
+		add(new Pair<String,Enchantment>(scrollRecallName, Enchantment.DIG_SPEED));
+		add(new Pair<String,Enchantment>(scrollShieldName, Enchantment.DURABILITY));
+		add(new Pair<String,Enchantment>(scrollBoundSwordName, Enchantment.FIRE_ASPECT));
+		add(new Pair<String,Enchantment>(scrollCommandName, Enchantment.KNOCKBACK));
+		add(new Pair<String,Enchantment>(scrollPoisonName, Enchantment.LOOT_BONUS_BLOCKS));
+		add(new Pair<String,Enchantment>(scrollNightVisionName, Enchantment.LOOT_BONUS_MOBS));
+		add(new Pair<String,Enchantment>(scrollReflectName, Enchantment.LUCK));
+		add(new Pair<String,Enchantment>(scrollTelekinesisName, Enchantment.LURE));
+		add(new Pair<String,Enchantment>(scrollAttackName, Enchantment.OXYGEN));
 	}};
 	
 	// Lores
@@ -67,7 +87,14 @@ public final class Items{
 	}};
 	public static int loreLength = lores.size();
 	
-	
+	/**
+	 * Returns the Scroll matching the give name
+	 * 
+	 * @param name
+	 * 		Name of scroll.
+	 * @return
+	 * 		The magic scroll.
+	 */
 	public static ItemStack getScroll(String name){
 		ItemStack outputScroll = null;
 		
@@ -89,6 +116,12 @@ public final class Items{
 		return outputScroll;
 	}
 	
+	/**
+	 * Returns a newly crafted Redstone Sword
+	 * 
+	 * @return
+	 * 		The Redstone Sword.
+	 */
 	public static ItemStack getInitSword(){
 		ItemStack sword = new ItemStack(swordMaterial);
 		ItemMeta initMeta = sword.getItemMeta();
