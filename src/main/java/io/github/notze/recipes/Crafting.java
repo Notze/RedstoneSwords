@@ -53,7 +53,7 @@ public class Crafting implements Listener {
 			add(new Pair<String,Material>(Items.scrollNightVisionName, Material.TORCH));
 			add(new Pair<String,Material>(Items.scrollReflectName, Material.ARROW));
 			add(new Pair<String,Material>(Items.scrollTelekinesisName, Material.PISTON_BASE));
-			add(new Pair<String,Material>(Items.scrollAttackName, Material.IRON_INGOT));
+			add(new Pair<String,Material>(Items.scrollAttackName, Material.IRON_BLOCK));
 		}};
 		
 		for(Pair<String,Material> scroll : scrolls){

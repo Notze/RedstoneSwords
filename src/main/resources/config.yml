@@ -39,21 +39,29 @@ sword:
     boost: 1
 
 scroll:
-  # The radius in which a scroll of growth will take effect
-  growthRadius: 4
-  
-  # time limit for levitation in seconds
-  flightTime: 10
-  
-  # time limit for higher jumping in seconds
-  jumpTime: 10
-  
-  # time limit for underwater breathing in seconds
-  respirationTime: 120
-  
-  # time limit for water walking in seconds
-  waterWalkTime: 120
-  
+  levitation:
+    duration: 10
+    speed: 0.04
+  jump:
+    duration: 10
+  growth:
+    range: 4
+  waterwalk:
+    duration: 120
+  respiration:
+    duration: 120
+  shield:
+    duration: 30
+  nightvision:
+    duration: 120
+  attack:
+    duration: 15
+    bonus: 5
+  poison:
+    duration: 30
+  reflection:
+    duration: 30
+    
 # Damage dealt by a thrown Axe in half hearts
 thrownAxeDamage:
   wood: 7

@@ -15,8 +15,10 @@ public final class RedstoneSwords extends JavaPlugin {
 	public static int boostCost, teleportCost, redstoneOreAmount, speedBoost, 
 	speedBoostTime, expFactor, reclaimExpFactor, growthRadius, woodAxeDmg, 
 	stoneAxeDmg, ironAxeDmg, goldAxeDmg, diamondAxeDmg, flightTime, jumpTime,
-	respirationTime, torchFireTime, waterWalkTime;
+	respirationTime, torchFireTime, waterWalkTime, poisonTime, nightVisionTime,
+	attackTime, attackBonus, shieldTime, reflectionTime;
 	public static boolean keepEnchantmentsOnRepair;
+	public static float flightSpeed;
 	
 	@SuppressWarnings("unused")
 	@Override
@@ -61,11 +63,18 @@ public final class RedstoneSwords extends JavaPlugin {
 		keepEnchantmentsOnRepair =  config.getBoolean("keepEnchantmentsOnRepair");
 		torchFireTime = config.getInt("torchFireTime");
 		
-		growthRadius = config.getInt("scroll.growthRadius");
-		flightTime = config.getInt("scroll.flightTime");
-		jumpTime = config.getInt("scroll.jumpTime");
-		respirationTime = config.getInt("scroll.respirationTime");
-		waterWalkTime = config.getInt("scroll.waterWalkTime");
+		growthRadius = config.getInt("scroll.growth.range");
+		flightTime = config.getInt("scroll.levitation.duration");
+		flightSpeed = (float) config.getDouble("scroll.levitation.speed");
+		jumpTime = config.getInt("scroll.jump.duration");
+		respirationTime = config.getInt("scroll.respiration.duration");
+		waterWalkTime = config.getInt("scroll.waterwalk.duration");
+		poisonTime = config.getInt("scroll.poison.duration");
+		nightVisionTime = config.getInt("scroll.nightvision.duration");
+		attackTime = config.getInt("scroll.attack.duration");
+		attackBonus = config.getInt("scroll.attack.bonus");
+		shieldTime = config.getInt("scroll.shield.duration");
+		reflectionTime = config.getInt("scroll.reflection.duration");
 		
 		woodAxeDmg = config.getInt("thrownAxeDamage.wood");
 		stoneAxeDmg = config.getInt("thrownAxeDamage.stone");

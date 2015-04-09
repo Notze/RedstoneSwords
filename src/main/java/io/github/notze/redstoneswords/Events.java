@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javafx.util.Pair;
 import io.github.notze.util.Items;
 import io.github.notze.util.Particle;
@@ -15,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Item;
@@ -24,6 +24,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -41,9 +43,11 @@ public class Events implements Listener{
 	RedstoneSwords redstoneSwords;
 	
 	// scroll timers and variables
-	int flightTimer, waterWalkTimer;
-	Boolean oldStat;
-	Block last;
+	int flightTimer, waterWalkTimer, reflectionTimer;
+	Boolean oldFlyBool; // levitation
+	float oldFlySpeed; // levitation
+	Block last; // water walking
+	static List<Player> reflection = new ArrayList<Player>(); // reflection
 	
 	// the player
 	Player player = null;
@@ -175,7 +179,7 @@ public class Events implements Listener{
 	}
 	
 	/**
-	 * Adds effects for items
+	 * Adds effects for items when a player caused it
 	 * 
 	 * @param e
 	 * 		EntityDamageByEntityEvent
@@ -188,6 +192,21 @@ public class Events implements Listener{
 			handItem = player.getItemInHand();
 			
 			torch(e);
+			
+		}
+	}
+	
+	/**
+	 * Adds effects for items when a player is the victim
+	 * 
+	 * @param e
+	 * 		EntityDamageEvent
+	 */
+	@EventHandler
+	public void onEntityDamage(EntityDamageEvent e){
+		if(e.getEntity() instanceof Player){
+		
+			reflect(e);
 			
 		}
 	}
@@ -227,6 +246,30 @@ public class Events implements Listener{
 		handItem = player.getItemInHand();
 		
 		Utilities.destroyRedstoneSword(player, handItem);
+	}
+	
+	/**
+	 * reflect damage done by arrows
+	 * 
+	 * @param e
+	 * 		PlayerInteractEntityEvent
+	 */
+	private void reflect(EntityDamageEvent e){
+		if(e.getCause().equals(DamageCause.PROJECTILE)){
+			EntityDamageByEntityEvent newE = (EntityDamageByEntityEvent) e;
+			Entity projectile = newE.getDamager();
+			if(projectile instanceof Arrow){
+				Arrow arrow = (Arrow) projectile;
+				if(arrow.getShooter() instanceof LivingEntity){
+					LivingEntity damager = (LivingEntity) arrow.getShooter();
+					Player damagedPlayer = (Player) e.getEntity();
+					if(reflection.contains(damagedPlayer)){
+						damager.damage(e.getDamage());
+						e.setCancelled(true);
+					}
+				}
+			}
+		}	
 	}
 	
 	/**
@@ -285,9 +328,24 @@ public class Events implements Listener{
 						break;
 					}
 			}
+		
+		// scroll of poison
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollPoisonName)))
+			if(e.getRightClicked() instanceof LivingEntity){
+				
+				LivingEntity mob = (LivingEntity) e.getRightClicked();
+				mob.addPotionEffect(new PotionEffect(
+						PotionEffectType.POISON, 
+						RedstoneSwords.poisonTime*20, 
+						1));
+				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+			}
+		
 		// TODO
 		// scroll of command
-		// scroll of poison
+		
 	}
 	
 	private void consumeRedstoneOre(PlayerInteractEvent e){
@@ -398,8 +456,10 @@ public class Events implements Listener{
 		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollLevitationName))){
 			
 			flightTimer = RedstoneSwords.flightTime*20;
-			oldStat = player.getAllowFlight();
+			oldFlyBool = player.getAllowFlight();
+			oldFlySpeed = player.getFlySpeed();
 			player.setAllowFlight(true);
+			player.setFlySpeed(RedstoneSwords.flightSpeed);
 			decreaseStack(player, handItem);
 			Particle.smoke.apply(player, 0.2, 100, 1);
 			
@@ -408,11 +468,12 @@ public class Events implements Listener{
 					
 					if(flightTimer==0){
 						player.setFlying(false);
-						player.setAllowFlight(oldStat);
+						player.setAllowFlight(oldFlyBool);
+						player.setFlySpeed(oldFlySpeed);
 						cancel();
 					}else{
 						player.setFlying(true);
-						if(flightTimer%20 == 0)
+						if(flightTimer%100 == 0)
 							player.sendMessage("Levitation wears off in " + flightTimer/20 + " seconds.");
 						flightTimer--;
 					}
@@ -472,6 +533,19 @@ public class Events implements Listener{
 			// TODO
 			// give player sword with unique id
 			// remove sword after delay (even from inventory or laying around or stored in a chest etc.)
+			
+//			final ItemStack boundSword = new ItemStack(Material.DIAMOND_SWORD);
+//			final Item boundSwordItem = player.getWorld().dropItemNaturally(player.getLocation(), boundSword);
+//			
+//			decreaseStack(player, handItem);
+//			Particle.smoke.apply(player, 0.2, 100, 1);
+//			new BukkitRunnable(){
+//				public void run(){
+//					redstoneSwords.getLogger().info("removeing shit");
+//					boundSwordItem.remove();
+//					// TODO aufgesammeltes item, item in kiste oder sonstwo
+//				}
+//			}.runTaskLater(redstoneSwords, 20*10); //TODO timer nutzen
 		}
 		
 		// scroll of water walking
@@ -516,13 +590,74 @@ public class Events implements Listener{
 			}.runTaskTimer(redstoneSwords, 0, 1);
 		}
 		
-		//TODO
-		// scroll of recall
 		// scroll of shield
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollShieldName))){
+			player.addPotionEffect(new PotionEffect(
+					PotionEffectType.ABSORPTION, 
+					RedstoneSwords.shieldTime*20, 
+					1));
+			
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+		}
+		
 		// scroll of night vision
-		// scroll of reflection
-		// scroll of telekinesis
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollNightVisionName))){
+			player.addPotionEffect(new PotionEffect(
+					PotionEffectType.NIGHT_VISION, 
+					RedstoneSwords.nightVisionTime*20, 
+					1));
+			
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+		}
+		
 		// scroll of attack
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollAttackName))){
+			player.addPotionEffect(new PotionEffect(
+					PotionEffectType.INCREASE_DAMAGE, 
+					RedstoneSwords.attackTime*20, 
+					RedstoneSwords.attackBonus));
+			
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+		}
+		
+		// scroll of recall
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRecallName))){
+			if(player.getBedSpawnLocation() == null){
+				player.sendMessage("There is no location for this recall!");
+			}else{
+				player.teleport(player.getBedSpawnLocation());
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+			}
+		}
+		
+		// scroll of reflection
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollReflectName))){
+			reflectionTimer = RedstoneSwords.reflectionTime;
+			reflection.add(player);
+			
+			decreaseStack(player, handItem);
+			Particle.smoke.apply(player, 0.2, 100, 1);
+			
+			new BukkitRunnable(){
+				public void run(){
+					if(reflectionTimer <= 0){
+						reflection.remove(player);
+					}else{
+						if(reflectionTimer%5 == 0)
+							player.sendMessage("Reflection wears off in " + reflectionTimer + " seconds.");
+						reflectionTimer--;
+					}
+				}
+			}.runTaskTimer(redstoneSwords, 0, 20);
+		}
+		
+		//TODO
+		// scroll of telekinesis
+		
 	}
 	
 	@SuppressWarnings("serial")
