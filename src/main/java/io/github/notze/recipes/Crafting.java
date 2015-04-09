@@ -56,13 +56,16 @@ public class Crafting implements Listener {
 		}};
 		
 		for(Pair<String,Material> scroll : scrolls){
-			ItemStack scrollItem = Items.getScroll(scroll.getKey());
-			redstoneSwords.getServer().addRecipe(
-					new ShapelessRecipe(scrollItem)
-					.addIngredient(Material.PAPER)
-					.addIngredient(Material.INK_SACK)
-					.addIngredient(Material.FEATHER)
-					.addIngredient(scroll.getValue()));
+			for(int i=1; i<=6; i++){
+				ItemStack scrollItem = Items.getScroll(scroll.getKey());
+				scrollItem.setAmount(i);
+				redstoneSwords.getServer().addRecipe(
+						new ShapelessRecipe(scrollItem)
+						.addIngredient(i,Material.PAPER)
+						.addIngredient(Material.INK_SACK)
+						.addIngredient(Material.FEATHER)
+						.addIngredient(scroll.getValue()));
+			}
 		}
 		
 		// crafting the redstone sword
