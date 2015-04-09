@@ -62,7 +62,7 @@ scroll:
   reflection:
     duration: 30
   command:
-    duration: 120
+    duration: 600
   bound:
     sword:
       duration: 60

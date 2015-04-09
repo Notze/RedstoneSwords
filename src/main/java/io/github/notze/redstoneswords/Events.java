@@ -374,7 +374,7 @@ public class Events implements Listener{
 		if(target != null){
 			for(Pair<Player,Monster> p : commands)
 				if(p.getKey().equals(player))
-					if(!p.getValue().equals(target))// prevent skeletons from shooting them self
+					if(!commands.contains(p.getValue()))// prevent minions from attacking them self
 						p.getValue().setTarget(target);
 		}
 		
@@ -482,8 +482,9 @@ public class Events implements Listener{
 				
 				commandTimer = RedstoneSwords.commandTime*20;
 				final Monster monster = (Monster) e.getRightClicked();
-				// TODO make monsters follow the player
 				commands.add(new Pair<Player,Monster>(player, monster));
+				monster.setCustomName("Minion of " + player.getDisplayName());
+				monster.setCustomNameVisible(true);
 				
 				decreaseStack(player, handItem);
 				Particle.smoke.apply(player, 0.2, 100, 1);
@@ -491,12 +492,16 @@ public class Events implements Listener{
 				// make sure player doesn't get attacked
 				new BukkitRunnable(){
 					public void run(){
-						if(commandTimer <= 0)
+						if(commandTimer <= 0 || monster.isDead()){
 							cancel();
+							commands.remove(monster);
+							monster.setCustomNameVisible(false);
+						}
 						if(monster.getTarget() != null
 								&& monster.getTarget().equals(player))
 							monster.setTarget(null);
 						
+						Particle.instantSpell.apply(monster, 0.1, 10, 1);
 						commandTimer--;
 					}
 				}.runTaskTimer(redstoneSwords, 0, 1);

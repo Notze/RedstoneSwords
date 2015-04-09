@@ -1,7 +1,7 @@
 package io.github.notze.util;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 
 public enum Particle {
 	explode("explode"),
@@ -50,7 +50,7 @@ public enum Particle {
 		this.name = name;
 	}
 	
-	public void apply(Player player, double speed, int amount, int range){
+	public void apply(LivingEntity player, double speed, int amount, int range){
 		Location loc = player.getLocation();
 		
 		player.getServer().dispatchCommand(
