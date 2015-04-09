@@ -31,12 +31,41 @@ public final class Items{
 	public static String scrollWaterName = "Scroll of Water Walking";
 	public static String scrollRecallName = "Scroll of Recall";
 	public static String scrollShieldName = "Scroll of Shield";
-	public static String scrollBoundSwordName = "Scroll of Bound Sword";
 	public static String scrollCommandName = "Scroll of Commanding";
 	public static String scrollPoisonName = "Scroll of Poisoning";
 	public static String scrollNightVisionName = "Scroll of Night Eye";
 	public static String scrollReflectName = "Scroll of Reflection";
 	public static String scrollAttackName = "Scroll of Fortify Attack";
+	// bound items
+	public static String scrollBoundSwordName = "Scroll of Bound Sword";
+	public static String scrollBoundPickaxeName = "Scroll of Bound Pickaxe";
+	public static String scrollBoundShovelName = "Scroll of Bound Shovel";
+	public static String scrollBoundAxeName = "Scroll of Bound Axe";
+	public static String scrollBoundHoeName = "Scroll of Bound Hoe";
+	public static String boundSwordName = "Bound Sword";
+	public static String boundPickaxeName = "Bound Pickaxe";
+	public static String boundShovelName = "Bound Shovel";
+	public static String boundAxeName = "Bound Axe";
+	public static String boundHoeName = "Bound Hoe";
+	
+	@SuppressWarnings("serial")
+	public static List<ItemStack> boundItems = new ArrayList<ItemStack>(){{
+		for(BoundItem item : BoundItem.values())
+			add(getBoundItem(item));
+	}};
+	public static enum BoundItem{
+		sword(scrollBoundSwordName),
+		pick(scrollBoundPickaxeName),
+		shovel(scrollBoundShovelName),
+		axe(scrollBoundAxeName),
+		hoe(scrollBoundHoeName);
+		
+		public String scrollName;
+		
+		BoundItem(String scrollName){
+			this.scrollName = scrollName;
+		}
+	}
 	
 	// Scroll identification
 	@SuppressWarnings("serial")
@@ -56,7 +85,11 @@ public final class Items{
 		add(new Pair<String,Enchantment>(scrollPoisonName, Enchantment.LOOT_BONUS_BLOCKS));
 		add(new Pair<String,Enchantment>(scrollNightVisionName, Enchantment.LOOT_BONUS_MOBS));
 		add(new Pair<String,Enchantment>(scrollReflectName, Enchantment.LUCK));
-		add(new Pair<String,Enchantment>(scrollAttackName, Enchantment.OXYGEN));
+		add(new Pair<String,Enchantment>(scrollAttackName, Enchantment.LURE));
+		add(new Pair<String,Enchantment>(scrollBoundPickaxeName, Enchantment.OXYGEN));
+		add(new Pair<String,Enchantment>(scrollBoundShovelName, Enchantment.PROTECTION_ENVIRONMENTAL));
+		add(new Pair<String,Enchantment>(scrollBoundAxeName, Enchantment.PROTECTION_EXPLOSIONS));
+		add(new Pair<String,Enchantment>(scrollBoundHoeName, Enchantment.PROTECTION_FALL));
 	}};
 	
 	// Lores
@@ -142,5 +175,74 @@ public final class Items{
 		
 		return sword;
 	}
-
+	
+	/**
+	 * Returns the specified boundItem
+	 * 
+	 * @param item
+	 * 		the name of the item from enum
+	 * @return
+	 * 		the item
+	 */
+	@SuppressWarnings("serial")
+	public static ItemStack getBoundItem(BoundItem item){
+		ItemStack boundItem = null;
+		ItemMeta im;
+		switch(item){
+		case sword:
+			boundItem = new ItemStack(Material.GOLD_SWORD);
+			im = boundItem.getItemMeta();
+			
+			im.addEnchant(Enchantment.DAMAGE_ALL, 5, false);
+			im.addEnchant(Enchantment.LOOT_BONUS_MOBS, 3, false);
+			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
+			im.setDisplayName(boundSwordName);
+			boundItem.setItemMeta(im);
+			
+			return boundItem;
+		case pick:
+			boundItem = new ItemStack(Material.GOLD_PICKAXE);
+			im = boundItem.getItemMeta();
+			
+			im.addEnchant(Enchantment.DIG_SPEED, 5, false);
+			im.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, false);
+			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
+			im.setDisplayName(boundPickaxeName);
+			boundItem.setItemMeta(im);
+			
+			return boundItem;
+		case shovel:
+			boundItem = new ItemStack(Material.GOLD_SPADE);
+			im = boundItem.getItemMeta();
+			
+			im.addEnchant(Enchantment.DIG_SPEED, 5, false);
+			im.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, false);
+			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
+			im.setDisplayName(boundShovelName);
+			boundItem.setItemMeta(im);
+			
+			return boundItem;
+		case axe:
+			boundItem = new ItemStack(Material.GOLD_AXE);
+			im = boundItem.getItemMeta();
+			
+			im.addEnchant(Enchantment.DIG_SPEED, 5, false);
+			im.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, false);
+			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
+			im.setDisplayName(boundAxeName);
+			boundItem.setItemMeta(im);
+			
+			return boundItem;
+		case hoe:
+			boundItem = new ItemStack(Material.GOLD_HOE);
+			im = boundItem.getItemMeta();
+			
+			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
+			im.setDisplayName(boundHoeName);
+			boundItem.setItemMeta(im);
+			
+			return boundItem;
+		}
+		return boundItem;
+	}
 }

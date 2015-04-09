@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javafx.util.Pair;
 import io.github.notze.util.Items;
+import io.github.notze.util.Items.BoundItem;
 import io.github.notze.util.Particle;
 import io.github.notze.util.Utilities;
 
@@ -22,16 +23,22 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -195,6 +202,7 @@ public class Events implements Listener{
 			handItem = player.getItemInHand();
 			
 			torch(e);
+			unbreakableBoundItems(e);
 			
 		}
 	}
@@ -250,6 +258,92 @@ public class Events implements Listener{
 		handItem = player.getItemInHand();
 		
 		Utilities.destroyRedstoneSword(player, handItem);
+	}
+	
+	/**
+	 * Remove bound item on attempt to pick it up from the ground.
+	 * In case a player with a bound tool died.
+	 * 
+	 * @param e
+	 * 		PlayerPickupItemEvent
+	 */
+	@EventHandler
+	public void onPlayerPickupItem(PlayerPickupItemEvent e){
+		if(Utilities.isBoundItem(e.getItem().getItemStack())){
+			e.getItem().remove();
+			e.setCancelled(true);
+		}
+	}
+	
+	/**
+	 * Remove bound item on attempt to drop it
+	 * 
+	 * @param e
+	 * 		PlayerDropItemEvent
+	 */
+	@EventHandler
+	public void onPlayerDropItem(PlayerDropItemEvent e){
+		if(Utilities.isBoundItem(e.getItemDrop().getItemStack()))
+			e.getItemDrop().remove();
+	}
+	
+	/**
+	 * Remove bound item on attempt to click it.
+	 * 
+	 * @param e
+	 * 		InventoryClickEvent
+	 */
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent e){
+		if(Utilities.isBoundItem(e.getCursor())
+				|| Utilities.isBoundItem(e.getCurrentItem())){
+			e.setResult(Event.Result.DENY);
+			if(e.getWhoClicked() instanceof Player)
+				((Player) e.getWhoClicked()).updateInventory();
+		}
+	}
+	
+	/**
+	 * Add things when blocks are broken
+	 * 
+	 * @param e
+	 * 		BlockBreakEvent
+	 */
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e){
+		player = e.getPlayer();
+		handItem = player.getItemInHand();
+		
+		unbreakableBoundItems(e);
+	}
+	
+	/**
+	 * Prevent bound items from breaking
+	 * 
+	 * @param e
+	 * 		EntityDamageByEntityEvent
+	 */
+	@SuppressWarnings("deprecation")
+	private void unbreakableBoundItems(EntityDamageByEntityEvent e){
+		if(Utilities.isBoundItem(handItem)){
+			handItem.setDurability((short) -1);
+			player.updateInventory();
+		}
+	}
+	
+	/**
+	 * Prevent bound items from breaking
+	 * 
+	 * @param e
+	 * 		BlockBreakEvent
+	 */
+	@SuppressWarnings("deprecation")
+	private void unbreakableBoundItems(BlockBreakEvent e){
+		if(Utilities.isBoundItem(handItem)){
+			handItem.setDurability((short) -1);
+			player.updateInventory();
+		}
 	}
 	
 	/**
@@ -589,24 +683,24 @@ public class Events implements Listener{
 			Particle.smoke.apply(player, 0.2, 100, 1);
 		}
 		
-		// scroll of bound sword
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollBoundSwordName))){
-			// TODO
-			// give player sword with unique id
-			// remove sword after delay (even from inventory or laying around or stored in a chest etc.)
-			
-//			final ItemStack boundSword = new ItemStack(Material.DIAMOND_SWORD);
-//			final Item boundSwordItem = player.getWorld().dropItemNaturally(player.getLocation(), boundSword);
-//			
-//			decreaseStack(player, handItem);
-//			Particle.smoke.apply(player, 0.2, 100, 1);
-//			new BukkitRunnable(){
-//				public void run(){
-//					redstoneSwords.getLogger().info("removeing shit");
-//					boundSwordItem.remove();
-//					// TODO aufgesammeltes item, item in kiste oder sonstwo
-//				}
-//			}.runTaskLater(redstoneSwords, 20*10); //TODO timer nutzen
+		// scrolls of bound items
+		for(BoundItem item : BoundItem.values()){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(item.scrollName))){
+				final ItemStack boundItem = Items.getBoundItem(item);
+				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+				
+				final ItemStack inVoid = handItem.clone();
+				player.setItemInHand(boundItem);
+				
+				new BukkitRunnable(){
+					public void run(){
+						removeBoundItem(boundItem);
+						player.getInventory().addItem(inVoid);
+					}
+				}.runTaskLater(redstoneSwords, RedstoneSwords.boundSwordTime*20);
+			}
 		}
 		
 		// scroll of water walking
@@ -715,6 +809,21 @@ public class Events implements Listener{
 				}
 			}.runTaskTimer(redstoneSwords, 0, 20);
 		}
+	}
+	
+	/**
+	 * Removes the give bound item from the players inventory
+	 * 
+	 * @param boundItem
+	 * 		the item to remove
+	 */
+	private void removeBoundItem(ItemStack boundItem){
+		Inventory inv = player.getInventory();
+		ItemStack[] invCont = inv.getContents();
+		for(int i=0; i<invCont.length; i++)
+			if(Utilities.boundItemsEqual(boundItem, invCont[i]))
+				invCont[i] = null;
+		player.getInventory().setContents(invCont);
 	}
 	
 	@SuppressWarnings("serial")

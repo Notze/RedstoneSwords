@@ -16,7 +16,8 @@ public final class RedstoneSwords extends JavaPlugin {
 	speedBoostTime, expFactor, reclaimExpFactor, growthRadius, woodAxeDmg, 
 	stoneAxeDmg, ironAxeDmg, goldAxeDmg, diamondAxeDmg, flightTime, jumpTime,
 	respirationTime, torchFireTime, waterWalkTime, poisonTime, nightVisionTime,
-	attackTime, attackBonus, shieldTime, reflectionTime, commandTime;
+	attackTime, attackBonus, shieldTime, reflectionTime, commandTime, 
+	boundSwordTime, boundPickaxeTime, boundAxeTime, boundHoeTime, boundShovelTime;
 	public static boolean keepEnchantmentsOnRepair;
 	public static float flightSpeed;
 	
@@ -75,6 +76,11 @@ public final class RedstoneSwords extends JavaPlugin {
 		shieldTime = config.getInt("scroll.shield.duration");
 		reflectionTime = config.getInt("scroll.reflection.duration");
 		commandTime = config.getInt("scroll.command.duration");
+		boundSwordTime = config.getInt("scroll.bound.sword.duration");
+		boundPickaxeTime = config.getInt("scroll.bound.pickaxe.duration");
+		boundShovelTime = config.getInt("scroll.bound.shovel.duration");
+		boundAxeTime = config.getInt("scroll.bound.axe.duration");
+		boundHoeTime = config.getInt("scroll.bound.hoe.duration");
 		
 		woodAxeDmg = config.getInt("thrownAxeDamage.wood");
 		stoneAxeDmg = config.getInt("thrownAxeDamage.stone");

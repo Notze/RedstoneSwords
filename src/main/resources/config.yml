@@ -63,6 +63,17 @@ scroll:
     duration: 30
   command:
     duration: 120
+  bound:
+    sword:
+      duration: 60
+    pickaxe:
+      duration: 60
+    shovel:
+      duration: 60
+    axe:
+      duration: 60
+    hoe:
+      duration: 60
     
 # Damage dealt by a thrown Axe in half hearts
 thrownAxeDamage:

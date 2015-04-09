@@ -47,12 +47,16 @@ public class Crafting implements Listener {
 			add(new Pair<String,Material>(Items.scrollWaterName, Material.WATER_LILY));
 			add(new Pair<String,Material>(Items.scrollRecallName, Material.BED));
 			add(new Pair<String,Material>(Items.scrollShieldName, Material.LEATHER));
-			add(new Pair<String,Material>(Items.scrollBoundSwordName, Material.WOOD_SWORD));
 			add(new Pair<String,Material>(Items.scrollCommandName, Material.ROTTEN_FLESH));
 			add(new Pair<String,Material>(Items.scrollPoisonName, Material.RED_MUSHROOM));
 			add(new Pair<String,Material>(Items.scrollNightVisionName, Material.TORCH));
 			add(new Pair<String,Material>(Items.scrollReflectName, Material.ARROW));
 			add(new Pair<String,Material>(Items.scrollAttackName, Material.IRON_BLOCK));
+			add(new Pair<String,Material>(Items.scrollBoundSwordName, Material.GOLD_SWORD));
+			add(new Pair<String,Material>(Items.scrollBoundPickaxeName, Material.GOLD_PICKAXE));
+			add(new Pair<String,Material>(Items.scrollBoundShovelName, Material.GOLD_SPADE));
+			add(new Pair<String,Material>(Items.scrollBoundAxeName, Material.GOLD_AXE));
+			add(new Pair<String,Material>(Items.scrollBoundHoeName, Material.GOLD_HOE));
 		}};
 		
 		for(Pair<String,Material> scroll : scrolls){

@@ -36,6 +36,50 @@ public class Utilities {
 		player.getInventory().remove(handItem);
 	}
 	
+	/**
+	 * Checks if the given item is a bound item.
+	 * 
+	 * @param item
+	 * 		ItemStack to check
+	 * @return
+	 * 		true if it is a bound item, false else
+	 */
+	public static boolean isBoundItem(ItemStack item){
+		if(item == null) return false;
+		if(!(item.hasItemMeta())) return false;
+		ItemMeta im = item.getItemMeta();
+		if(!(im.hasLore())) return false;
+		for(ItemStack boundItem : Items.boundItems){
+			ItemMeta bim = boundItem.getItemMeta();
+			if(bim.getDisplayName().equals(im.getDisplayName())
+					&& bim.getLore().equals(im.getLore()))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if the given bound items are the same.
+	 * 
+	 * @param i1
+	 * 		ItemStack to check
+	 * @param i2
+	 * 		second ItemStack to check
+	 * @return
+	 * 		true if it bound items of same type, false otherwise
+	 */
+	public static boolean boundItemsEqual(ItemStack i1, ItemStack i2){
+		if(i1==null || i2==null) return false;
+		if(!(i1.hasItemMeta() && i2.hasItemMeta())) return false;
+		ItemMeta im1 = i1.getItemMeta();
+		ItemMeta im2 = i2.getItemMeta();
+		if(!(im1.hasLore() && im2.hasLore())) return false;
+		if(im1.getDisplayName().equals(im2.getDisplayName())
+				&& im1.getLore().equals(im2.getLore()))
+			return true;
+		return false;
+	}
+	
 	public static boolean scrollsEqual(ItemStack scroll1, ItemStack scroll2){
 		if(!(scroll1.hasItemMeta() && scroll2.hasItemMeta())) return false;
 		if(!(scroll1.getType().equals(scroll2.getType()))) return false;
