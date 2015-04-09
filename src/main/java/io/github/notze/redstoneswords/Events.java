@@ -715,10 +715,6 @@ public class Events implements Listener{
 				}
 			}.runTaskTimer(redstoneSwords, 0, 20);
 		}
-		
-		//TODO
-		// scroll of telekinesis
-		
 	}
 	
 	@SuppressWarnings("serial")

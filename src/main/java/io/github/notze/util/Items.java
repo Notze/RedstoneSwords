@@ -36,7 +36,6 @@ public final class Items{
 	public static String scrollPoisonName = "Scroll of Poisoning";
 	public static String scrollNightVisionName = "Scroll of Night Eye";
 	public static String scrollReflectName = "Scroll of Reflection";
-	public static String scrollTelekinesisName = "Scroll of Telekinesis";
 	public static String scrollAttackName = "Scroll of Fortify Attack";
 	
 	// Scroll identification
@@ -57,7 +56,6 @@ public final class Items{
 		add(new Pair<String,Enchantment>(scrollPoisonName, Enchantment.LOOT_BONUS_BLOCKS));
 		add(new Pair<String,Enchantment>(scrollNightVisionName, Enchantment.LOOT_BONUS_MOBS));
 		add(new Pair<String,Enchantment>(scrollReflectName, Enchantment.LUCK));
-		add(new Pair<String,Enchantment>(scrollTelekinesisName, Enchantment.LURE));
 		add(new Pair<String,Enchantment>(scrollAttackName, Enchantment.OXYGEN));
 	}};
 	
