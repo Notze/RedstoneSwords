@@ -23,8 +23,3 @@ commands:
     usage: Usage /rsstoreinventory
     permission: redstoneSwords.rsstoreinventory
     permission-message: You don't have permission <redstoneSwords.rsstoreinventory>
-  test:
-    description: test
-    usage: Usage /test
-    permission:
-    permission-message:

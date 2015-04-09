@@ -41,7 +41,6 @@ public final class RedstoneSwords extends JavaPlugin {
 		// Bonus commands
 		this.getCommand("rsclearinventory").setExecutor(new RedstoneSwordsCommandExecutor(this));
 		this.getCommand("rsstoreinventory").setExecutor(new RedstoneSwordsCommandExecutor(this));
-		this.getCommand("test").setExecutor(new RedstoneSwordsCommandExecutor(this));
 	}
 	
 	@Override
