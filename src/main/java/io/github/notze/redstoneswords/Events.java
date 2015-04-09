@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javafx.util.Pair;
 import io.github.notze.util.Items;
 import io.github.notze.util.Particle;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,11 +45,12 @@ public class Events implements Listener{
 	RedstoneSwords redstoneSwords;
 	
 	// scroll timers and variables
-	int flightTimer, waterWalkTimer, reflectionTimer;
+	int flightTimer, waterWalkTimer, reflectionTimer, commandTimer;
 	Boolean oldFlyBool; // levitation
 	float oldFlySpeed; // levitation
 	Block last; // water walking
 	static List<Player> reflection = new ArrayList<Player>(); // reflection
+	static List<Pair<Player,Monster>> commands = new ArrayList<Pair<Player,Monster>>(); // command
 	
 	// the player
 	Player player = null;
@@ -207,6 +210,7 @@ public class Events implements Listener{
 		if(e.getEntity() instanceof Player){
 		
 			reflect(e);
+			minions(e);
 			
 		}
 	}
@@ -246,6 +250,41 @@ public class Events implements Listener{
 		handItem = player.getItemInHand();
 		
 		Utilities.destroyRedstoneSword(player, handItem);
+	}
+	
+	/**
+	 * sets the target for your minions.
+	 * 
+	 * @param e
+	 * 		EntityDamageEvent
+	 */
+	public void minions(EntityDamageEvent e){
+		LivingEntity target = null;
+		
+		// case 1 arrow
+		if(e.getCause().equals(DamageCause.PROJECTILE)){
+			EntityDamageByEntityEvent newE = (EntityDamageByEntityEvent) e;
+			Entity projectile = newE.getDamager();
+			if(projectile instanceof Arrow){
+				Arrow arrow = (Arrow) projectile;
+				if(arrow.getShooter() instanceof LivingEntity)
+					target = (LivingEntity) arrow.getShooter();
+			}
+		}	
+		// case 2 direct hit
+		if(e.getCause().equals(DamageCause.ENTITY_ATTACK)){
+			EntityDamageByEntityEvent newE = (EntityDamageByEntityEvent) e;
+			target = (LivingEntity) newE.getDamager();
+		}
+		
+		if(target != null){
+			for(Pair<Player,Monster> p : commands)
+				if(p.getKey().equals(player))
+					if(!p.getValue().equals(target))// prevent skeletons from shooting them self
+						p.getValue().setTarget(target);
+		}
+		
+		
 	}
 	
 	/**
@@ -342,10 +381,32 @@ public class Events implements Listener{
 				decreaseStack(player, handItem);
 				Particle.smoke.apply(player, 0.2, 100, 1);
 			}
-		
-		// TODO
+
 		// scroll of command
-		
+		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollCommandName)))
+			if(e.getRightClicked() instanceof Monster){
+				
+				commandTimer = RedstoneSwords.commandTime*20;
+				final Monster monster = (Monster) e.getRightClicked();
+				// TODO make monsters follow the player
+				commands.add(new Pair<Player,Monster>(player, monster));
+				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+				
+				// make sure player doesn't get attacked
+				new BukkitRunnable(){
+					public void run(){
+						if(commandTimer <= 0)
+							cancel();
+						if(monster.getTarget() != null
+								&& monster.getTarget().equals(player))
+							monster.setTarget(null);
+						
+						commandTimer--;
+					}
+				}.runTaskTimer(redstoneSwords, 0, 1);
+			}
 	}
 	
 	private void consumeRedstoneOre(PlayerInteractEvent e){

@@ -61,6 +61,8 @@ scroll:
     duration: 30
   reflection:
     duration: 30
+  command:
+    duration: 120
     
 # Damage dealt by a thrown Axe in half hearts
 thrownAxeDamage:
