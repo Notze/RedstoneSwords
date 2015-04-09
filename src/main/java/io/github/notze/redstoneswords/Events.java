@@ -56,6 +56,7 @@ public class Events implements Listener{
 	Boolean oldFlyBool; // levitation
 	float oldFlySpeed; // levitation
 	Block last; // water walking
+	ItemStack inVoid = null; // bound Items
 	static List<Player> reflection = new ArrayList<Player>(); // reflection
 	static List<Pair<Player,Monster>> commands = new ArrayList<Pair<Player,Monster>>(); // command
 	
@@ -440,72 +441,78 @@ public class Events implements Listener{
 	@SuppressWarnings("deprecation")
 	private void scrollsOnEntity(PlayerInteractEntityEvent e){
 		// scroll of rebirth
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRebirthName)))
-			if(e.getRightClicked() instanceof LivingEntity){
-				
-				LivingEntity mob = (LivingEntity) e.getRightClicked();
-				String mobName = mob.getType().getName();
-				for(spawnEggs egg : spawnEggs.values())
-					if(mobName.equals(egg.name)){
-									
-						decreaseStack(player, handItem);
-						Particle.smoke.apply(player, 0.2, 100, 1);
-						mob.remove();
-						player.getServer().dispatchCommand(
-								player.getServer().getConsoleSender(), 
-								"give "
-								+ player.getName() 
-								+ " spawn_egg 1 " 
-								+ egg.id
-						);
-						break;
-					}
-			}
+		if(!RedstoneSwords.scrollRebirthDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRebirthName)))
+				if(e.getRightClicked() instanceof LivingEntity){
+					
+					LivingEntity mob = (LivingEntity) e.getRightClicked();
+					String mobName = mob.getType().getName();
+					for(spawnEggs egg : spawnEggs.values())
+						if(mobName.equals(egg.name)){
+										
+							decreaseStack(player, handItem);
+							Particle.smoke.apply(player, 0.2, 100, 1);
+							mob.remove();
+							player.getServer().dispatchCommand(
+									player.getServer().getConsoleSender(), 
+									"give "
+									+ player.getName() 
+									+ " spawn_egg 1 " 
+									+ egg.id
+							);
+							break;
+						}
+				}
+		}
 		
 		// scroll of poison
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollPoisonName)))
-			if(e.getRightClicked() instanceof LivingEntity){
-				
-				LivingEntity mob = (LivingEntity) e.getRightClicked();
-				mob.addPotionEffect(new PotionEffect(
-						PotionEffectType.POISON, 
-						RedstoneSwords.poisonTime*20, 
-						1));
-				
-				decreaseStack(player, handItem);
-				Particle.smoke.apply(player, 0.2, 100, 1);
-			}
+		if(!RedstoneSwords.scrollPoisonDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollPoisonName)))
+				if(e.getRightClicked() instanceof LivingEntity){
+					
+					LivingEntity mob = (LivingEntity) e.getRightClicked();
+					mob.addPotionEffect(new PotionEffect(
+							PotionEffectType.POISON, 
+							RedstoneSwords.poisonTime*20, 
+							1));
+					
+					decreaseStack(player, handItem);
+					Particle.smoke.apply(player, 0.2, 100, 1);
+				}
+		}
 
 		// scroll of command
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollCommandName)))
-			if(e.getRightClicked() instanceof Monster){
-				
-				commandTimer = RedstoneSwords.commandTime*20;
-				final Monster monster = (Monster) e.getRightClicked();
-				commands.add(new Pair<Player,Monster>(player, monster));
-				monster.setCustomName("Minion of " + player.getDisplayName());
-				monster.setCustomNameVisible(true);
-				
-				decreaseStack(player, handItem);
-				Particle.smoke.apply(player, 0.2, 100, 1);
-				
-				// make sure player doesn't get attacked
-				new BukkitRunnable(){
-					public void run(){
-						if(commandTimer <= 0 || monster.isDead()){
-							cancel();
-							commands.remove(monster);
-							monster.setCustomNameVisible(false);
+		if(!RedstoneSwords.scrollCommandDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollCommandName)))
+				if(e.getRightClicked() instanceof Monster){
+					
+					commandTimer = RedstoneSwords.commandTime*20;
+					final Monster monster = (Monster) e.getRightClicked();
+					commands.add(new Pair<Player,Monster>(player, monster));
+					monster.setCustomName("Minion of " + player.getDisplayName());
+					monster.setCustomNameVisible(true);
+					
+					decreaseStack(player, handItem);
+					Particle.smoke.apply(player, 0.2, 100, 1);
+					
+					// make sure player doesn't get attacked
+					new BukkitRunnable(){
+						public void run(){
+							if(commandTimer <= 0 || monster.isDead()){
+								cancel();
+								commands.remove(monster);
+								monster.setCustomNameVisible(false);
+							}
+							if(monster.getTarget() != null
+									&& monster.getTarget().equals(player))
+								monster.setTarget(null);
+							
+							Particle.instantSpell.apply(monster, 0.1, 10, 1);
+							commandTimer--;
 						}
-						if(monster.getTarget() != null
-								&& monster.getTarget().equals(player))
-							monster.setTarget(null);
-						
-						Particle.instantSpell.apply(monster, 0.1, 10, 1);
-						commandTimer--;
-					}
-				}.runTaskTimer(redstoneSwords, 0, 1);
-			}
+					}.runTaskTimer(redstoneSwords, 0, 1);
+				}
+		}
 	}
 	
 	private void consumeRedstoneOre(PlayerInteractEvent e){
@@ -588,231 +595,256 @@ public class Events implements Listener{
 	@SuppressWarnings("deprecation")
 	private void scrolls(PlayerInteractEvent e){
 		// scroll of respiration
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRespirationName))){
-			
-			player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, RedstoneSwords.respirationTime*20, 1));
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-			
+		if(!RedstoneSwords.scrollRespirationDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRespirationName))){
+				
+				player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, RedstoneSwords.respirationTime*20, 1));
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);		
+			}
 		}
 		
 		// scroll of jumping
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollJumpName))){
-			
-			player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, RedstoneSwords.jumpTime*20, 5));
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
+		if(!RedstoneSwords.scrollJumpDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollJumpName))){
+				
+				player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, RedstoneSwords.jumpTime*20, 5));
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+			}
 		}
 		
 		// scroll of healing
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollHealName))){
-			
-			player.setHealth(player.getMaxHealth());				
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
+		if(!RedstoneSwords.scrollHealDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollHealName))){
+				
+				player.setHealth(player.getMaxHealth());				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+			}
 		}
 		
 		// scroll of levitation
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollLevitationName))){
-			
-			flightTimer = RedstoneSwords.flightTime*20;
-			oldFlyBool = player.getAllowFlight();
-			oldFlySpeed = player.getFlySpeed();
-			player.setAllowFlight(true);
-			player.setFlySpeed(RedstoneSwords.flightSpeed);
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-			
-			new BukkitRunnable(){
-				public void run(){
-					
-					if(flightTimer==0){
-						player.setFlying(false);
-						player.setAllowFlight(oldFlyBool);
-						player.setFlySpeed(oldFlySpeed);
-						cancel();
-					}else{
-						player.setFlying(true);
-						if(flightTimer%100 == 0)
-							player.sendMessage("Levitation wears off in " + flightTimer/20 + " seconds.");
-						flightTimer--;
-					}
-				}
-			}.runTaskTimer(redstoneSwords, 0, 1);
-		}
-		
-		// scroll of fireball
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollFireballName))){
-			
-			Vector offset = player.getLocation().getDirection().multiply(2);
-			Location spawnLoc = player.getEyeLocation().add(offset);
-			player.getWorld().spawn(spawnLoc, Fireball.class);
-			player.getWorld().playEffect(spawnLoc, Effect.BLAZE_SHOOT, 1);
-			
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-		}
-		
-		// scroll of growth
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollCropName))){
-			
-			Location loc = player.getLocation();
-			
-			int r = RedstoneSwords.growthRadius;
-			int h = 1;
-
-			int x1 = loc.getBlockX()-r;
-			int y1 = loc.getBlockY()-h;
-			int z1 = loc.getBlockZ()-r;
-
-			int x2 = loc.getBlockX()+r;
-			int y2 = loc.getBlockY()+h;
-			int z2 = loc.getBlockZ()+r;
-			
-			for(int i=x1; i<=x2; i++){
-				for(int j=y1; j<=y2; j++){
-					for(int k=z1; k<=z2; k++){
-			
-						Block b = player.getWorld().getBlockAt(i, j, k);
-						if(b.getTypeId() == 59){ // id of wheat
-							b.setTypeIdAndData(59, (byte) 7, false);
-						}else if(b.getTypeId() == 141){ // id of carrots
-							b.setTypeIdAndData(141, (byte) 7, false);
-						}else if(b.getTypeId() == 142){ // id of potatoes
-							b.setTypeIdAndData(142, (byte) 7, false);
-						}
-					}
-				}
-			}		
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-		}
-		
-		// scrolls of bound items
-		for(BoundItem item : BoundItem.values()){
-			if(Utilities.scrollsEqual(handItem, Items.getScroll(item.scrollName))){
-				final ItemStack boundItem = Items.getBoundItem(item);
+		if(!RedstoneSwords.scrollLevitationDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollLevitationName))){
 				
+				flightTimer = RedstoneSwords.flightTime*20;
+				oldFlyBool = player.getAllowFlight();
+				oldFlySpeed = player.getFlySpeed();
+				player.setAllowFlight(true);
+				player.setFlySpeed(RedstoneSwords.flightSpeed);
 				decreaseStack(player, handItem);
 				Particle.smoke.apply(player, 0.2, 100, 1);
 				
-				final ItemStack inVoid = handItem.clone();
-				player.setItemInHand(boundItem);
-				
 				new BukkitRunnable(){
 					public void run(){
-						removeBoundItem(boundItem);
-						player.getInventory().addItem(inVoid);
+						
+						if(flightTimer==0){
+							player.setFlying(false);
+							player.setAllowFlight(oldFlyBool);
+							player.setFlySpeed(oldFlySpeed);
+							cancel();
+						}else{
+							player.setFlying(true);
+							if(flightTimer%100 == 0)
+								player.sendMessage("Levitation wears off in " + flightTimer/20 + " seconds.");
+							flightTimer--;
+						}
 					}
-				}.runTaskLater(redstoneSwords, RedstoneSwords.boundSwordTime*20);
+				}.runTaskTimer(redstoneSwords, 0, 1);
+			}
+		}
+		
+		// scroll of fireball
+		if(!RedstoneSwords.scrollFireballDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollFireballName))){
+				
+				Vector offset = player.getLocation().getDirection().multiply(2);
+				Location spawnLoc = player.getEyeLocation().add(offset);
+				player.getWorld().spawn(spawnLoc, Fireball.class);
+				player.getWorld().playEffect(spawnLoc, Effect.BLAZE_SHOOT, 1);
+				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+			}
+		}
+		
+		// scroll of growth
+		if(!RedstoneSwords.scrollGrowthDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollCropName))){
+				
+				Location loc = player.getLocation();
+				
+				int r = RedstoneSwords.growthRadius;
+				int h = 1;
+	
+				int x1 = loc.getBlockX()-r;
+				int y1 = loc.getBlockY()-h;
+				int z1 = loc.getBlockZ()-r;
+	
+				int x2 = loc.getBlockX()+r;
+				int y2 = loc.getBlockY()+h;
+				int z2 = loc.getBlockZ()+r;
+				
+				for(int i=x1; i<=x2; i++){
+					for(int j=y1; j<=y2; j++){
+						for(int k=z1; k<=z2; k++){
+				
+							Block b = player.getWorld().getBlockAt(i, j, k);
+							if(b.getTypeId() == 59){ // id of wheat
+								b.setTypeIdAndData(59, (byte) 7, false);
+							}else if(b.getTypeId() == 141){ // id of carrots
+								b.setTypeIdAndData(141, (byte) 7, false);
+							}else if(b.getTypeId() == 142){ // id of potatoes
+								b.setTypeIdAndData(142, (byte) 7, false);
+							}
+						}
+					}
+				}		
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+			}
+		}
+		
+		// scrolls of bound items
+		if(!RedstoneSwords.boundDisabled){
+			for(BoundItem item : BoundItem.values()){
+				if(Utilities.scrollsEqual(handItem, Items.getScroll(item.scrollName))){
+					final ItemStack boundItem = Items.getBoundItem(item);
+					
+					decreaseStack(player, handItem);
+					Particle.smoke.apply(player, 0.2, 100, 1);
+					
+					inVoid = player.getItemInHand().clone(); // get the value again because otherwise it doesnt update right
+					player.setItemInHand(boundItem);
+					
+					new BukkitRunnable(){
+						public void run(){
+							removeBoundItem(boundItem);
+							player.getInventory().addItem(inVoid);
+						}
+					}.runTaskLater(redstoneSwords, RedstoneSwords.boundSwordTime*20);
+				}
 			}
 		}
 		
 		// scroll of water walking
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollWaterName))){
-			waterWalkTimer = RedstoneSwords.waterWalkTime*20;
-			last = player.getLocation().getBlock();
-			
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-			
-			new BukkitRunnable(){
-				public void run(){
-					
-					if(waterWalkTimer%200 == 0)
-						player.sendMessage("Water walking wears off in " + waterWalkTimer/20 + " seconds.");
-					
-					waterWalkTimer--;
-					if(waterWalkTimer <= 0)
-						cancel();
-					
-					Location loc = player.getLocation();
-					if(last!=null && (loc.getBlockX()!=last.getX() || loc.getBlockZ()!=last.getZ())){
-						last.setType(Material.AIR);
-					
-						Block feet = loc.getBlock();
-						Block underneath = loc.clone().add(0, -1, 0).getBlock();
-						Block above = loc.clone().add(0, 1, 0).getBlock();
+		if(!RedstoneSwords.scrollWaterwalkDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollWaterName))){
+				waterWalkTimer = RedstoneSwords.waterWalkTime*20;
+				last = player.getLocation().getBlock();
+				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+				
+				new BukkitRunnable(){
+					public void run(){
 						
-						if(!above.getType().equals(Material.STATIONARY_WATER) ){// case player underwater
-							// case player swimming on surface
-							if(feet.getType().equals(Material.STATIONARY_WATER)){
-								above.setType(Material.WATER_LILY);
-								last=above;
-								player.teleport(loc.clone().add(0, 1.2, 0));// teleport onto lilypad
-							}else if(underneath.getType().equals(Material.STATIONARY_WATER)){ // case player above surface
-								feet.setType(Material.WATER_LILY);
-								last=feet;
+						if(waterWalkTimer%200 == 0)
+							player.sendMessage("Water walking wears off in " + waterWalkTimer/20 + " seconds.");
+						
+						waterWalkTimer--;
+						if(waterWalkTimer <= 0)
+							cancel();
+						
+						Location loc = player.getLocation();
+						if(last!=null && (loc.getBlockX()!=last.getX() || loc.getBlockZ()!=last.getZ())){
+							last.setType(Material.AIR);
+						
+							Block feet = loc.getBlock();
+							Block underneath = loc.clone().add(0, -1, 0).getBlock();
+							Block above = loc.clone().add(0, 1, 0).getBlock();
+							
+							if(!above.getType().equals(Material.STATIONARY_WATER) ){// case player underwater
+								// case player swimming on surface
+								if(feet.getType().equals(Material.STATIONARY_WATER)){
+									above.setType(Material.WATER_LILY);
+									last=above;
+									player.teleport(loc.clone().add(0, 1.2, 0));// teleport onto lilypad
+								}else if(underneath.getType().equals(Material.STATIONARY_WATER)){ // case player above surface
+									feet.setType(Material.WATER_LILY);
+									last=feet;
+								}
 							}
 						}
 					}
-				}
-			}.runTaskTimer(redstoneSwords, 0, 1);
+				}.runTaskTimer(redstoneSwords, 0, 1);
+			}
 		}
 		
 		// scroll of shield
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollShieldName))){
-			player.addPotionEffect(new PotionEffect(
-					PotionEffectType.ABSORPTION, 
-					RedstoneSwords.shieldTime*20, 
-					1));
-			
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-		}
-		
-		// scroll of night vision
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollNightVisionName))){
-			player.addPotionEffect(new PotionEffect(
-					PotionEffectType.NIGHT_VISION, 
-					RedstoneSwords.nightVisionTime*20, 
-					1));
-			
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-		}
-		
-		// scroll of attack
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollAttackName))){
-			player.addPotionEffect(new PotionEffect(
-					PotionEffectType.INCREASE_DAMAGE, 
-					RedstoneSwords.attackTime*20, 
-					RedstoneSwords.attackBonus));
-			
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-		}
-		
-		// scroll of recall
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRecallName))){
-			if(player.getBedSpawnLocation() == null){
-				player.sendMessage("There is no location for this recall!");
-			}else{
-				player.teleport(player.getBedSpawnLocation());
+		if(!RedstoneSwords.scrollShieldDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollShieldName))){
+				player.addPotionEffect(new PotionEffect(
+						PotionEffectType.ABSORPTION, 
+						RedstoneSwords.shieldTime*20, 
+						1));
+				
 				decreaseStack(player, handItem);
 				Particle.smoke.apply(player, 0.2, 100, 1);
 			}
 		}
 		
-		// scroll of reflection
-		if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollReflectName))){
-			reflectionTimer = RedstoneSwords.reflectionTime;
-			reflection.add(player);
-			
-			decreaseStack(player, handItem);
-			Particle.smoke.apply(player, 0.2, 100, 1);
-			
-			new BukkitRunnable(){
-				public void run(){
-					if(reflectionTimer <= 0){
-						reflection.remove(player);
-					}else{
-						if(reflectionTimer%5 == 0)
-							player.sendMessage("Reflection wears off in " + reflectionTimer + " seconds.");
-						reflectionTimer--;
-					}
+		// scroll of night vision
+		if(!RedstoneSwords.scrollNightvisionDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollNightVisionName))){
+				player.addPotionEffect(new PotionEffect(
+						PotionEffectType.NIGHT_VISION, 
+						RedstoneSwords.nightVisionTime*20, 
+						1));
+				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+			}
+		}
+		
+		// scroll of attack
+		if(!RedstoneSwords.scrollAttackDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollAttackName))){
+				player.addPotionEffect(new PotionEffect(
+						PotionEffectType.INCREASE_DAMAGE, 
+						RedstoneSwords.attackTime*20, 
+						RedstoneSwords.attackBonus));
+				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+			}
+		}
+		
+		// scroll of recall
+		if(!RedstoneSwords.scrollRecallDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRecallName))){
+				if(player.getBedSpawnLocation() == null){
+					player.sendMessage("There is no location for this recall!");
+				}else{
+					player.teleport(player.getBedSpawnLocation());
+					decreaseStack(player, handItem);
+					Particle.smoke.apply(player, 0.2, 100, 1);
 				}
-			}.runTaskTimer(redstoneSwords, 0, 20);
+			}
+		}
+		
+		// scroll of reflection
+		if(!RedstoneSwords.scrollReflectionDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollReflectName))){
+				reflectionTimer = RedstoneSwords.reflectionTime;
+				reflection.add(player);
+				
+				decreaseStack(player, handItem);
+				Particle.smoke.apply(player, 0.2, 100, 1);
+				
+				new BukkitRunnable(){
+					public void run(){
+						if(reflectionTimer <= 0){
+							reflection.remove(player);
+						}else{
+							if(reflectionTimer%5 == 0)
+								player.sendMessage("Reflection wears off in " + reflectionTimer + " seconds.");
+							reflectionTimer--;
+						}
+					}
+				}.runTaskTimer(redstoneSwords, 0, 20);
+			}
 		}
 	}
 	
@@ -833,35 +865,37 @@ public class Events implements Listener{
 	
 	@SuppressWarnings("serial")
 	private void franciska(PlayerInteractEvent e){
-		List<Pair<Material,Integer>> mats = new ArrayList<Pair<Material,Integer>>(){{
-			add(new Pair<Material,Integer>(Material.WOOD_AXE, RedstoneSwords.woodAxeDmg));
-			add(new Pair<Material,Integer>(Material.IRON_AXE, RedstoneSwords.stoneAxeDmg));
-			add(new Pair<Material,Integer>(Material.GOLD_AXE, RedstoneSwords.goldAxeDmg));
-			add(new Pair<Material,Integer>(Material.DIAMOND_AXE, RedstoneSwords.diamondAxeDmg));
-		}};
-		for(final Pair<Material,Integer> mat : mats){
-			if(handItem.getType() == mat.getKey()){
-				Location loc = player.getEyeLocation();
-				Vector direction = loc.getDirection().multiply(1.1D); // get direction and flying speed
-				
-				final Item drop = player.getWorld().dropItem(loc, handItem);
-				drop.setVelocity(direction);
-				
-				decreaseStack(player, handItem);
-				
-				new BukkitRunnable(){
-					@Override
-					public void run(){
-						if(drop.isOnGround()) cancel(); // only deal dmg with impact
-						for(Entity nearbyEntity : drop.getNearbyEntities(0,0,0)) // only affect exactly hit enemies 
-							if(nearbyEntity instanceof LivingEntity)
-								if(!(nearbyEntity == player)){ // don't hurt yourself!
-									LivingEntity nearbyLivingEntity = (LivingEntity) nearbyEntity;
-									nearbyLivingEntity.damage(mat.getValue(), player);
-									cancel(); // exit after one entity got hit
-								}
-					}
-				}.runTaskTimer(redstoneSwords, 0, 1); // start immediately since you can't hurt yourself
+		if(!RedstoneSwords.throwAxeDisabled){
+			List<Pair<Material,Integer>> mats = new ArrayList<Pair<Material,Integer>>(){{
+				add(new Pair<Material,Integer>(Material.WOOD_AXE, RedstoneSwords.woodAxeDmg));
+				add(new Pair<Material,Integer>(Material.IRON_AXE, RedstoneSwords.stoneAxeDmg));
+				add(new Pair<Material,Integer>(Material.GOLD_AXE, RedstoneSwords.goldAxeDmg));
+				add(new Pair<Material,Integer>(Material.DIAMOND_AXE, RedstoneSwords.diamondAxeDmg));
+			}};
+			for(final Pair<Material,Integer> mat : mats){
+				if(handItem.getType() == mat.getKey()){
+					Location loc = player.getEyeLocation();
+					Vector direction = loc.getDirection().multiply(1.1D); // get direction and flying speed
+					
+					final Item drop = player.getWorld().dropItem(loc, handItem);
+					drop.setVelocity(direction);
+					
+					decreaseStack(player, handItem);
+					
+					new BukkitRunnable(){
+						@Override
+						public void run(){
+							if(drop.isOnGround()) cancel(); // only deal dmg with impact
+							for(Entity nearbyEntity : drop.getNearbyEntities(0,0,0)) // only affect exactly hit enemies 
+								if(nearbyEntity instanceof LivingEntity)
+									if(!(nearbyEntity == player)){ // don't hurt yourself!
+										LivingEntity nearbyLivingEntity = (LivingEntity) nearbyEntity;
+										nearbyLivingEntity.damage(mat.getValue(), player);
+										cancel(); // exit after one entity got hit
+									}
+						}
+					}.runTaskTimer(redstoneSwords, 0, 1); // start immediately since you can't hurt yourself
+				}
 			}
 		}
 	}

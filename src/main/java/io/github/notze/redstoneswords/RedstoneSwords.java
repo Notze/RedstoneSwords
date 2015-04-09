@@ -18,7 +18,12 @@ public final class RedstoneSwords extends JavaPlugin {
 	respirationTime, torchFireTime, waterWalkTime, poisonTime, nightVisionTime,
 	attackTime, attackBonus, shieldTime, reflectionTime, commandTime, 
 	boundSwordTime, boundPickaxeTime, boundAxeTime, boundHoeTime, boundShovelTime;
-	public static boolean keepEnchantmentsOnRepair;
+	public static boolean keepEnchantmentsOnRepair, scrollLevitationDisabled, 
+	scrollJumpDisabled, scrollGrowthDisabled, scrollWaterwalkDisabled, 
+	scrollRespirationDisabled, scrollShieldDisabled, scrollNightvisionDisabled, 
+	scrollAttackDisabled, scrollPoisonDisabled, scrollReflectionDisabled, 
+	scrollCommandDisabled, boundDisabled, throwAxeDisabled, scrollRebirthDisabled, 
+	scrollHealDisabled, scrollFireballDisabled, scrollRecallDisabled;
 	public static float flightSpeed;
 	
 	@SuppressWarnings("unused")
@@ -87,6 +92,24 @@ public final class RedstoneSwords extends JavaPlugin {
 		ironAxeDmg = config.getInt("thrownAxeDamage.iron");
 		goldAxeDmg = config.getInt("thrownAxeDamage.gold");
 		diamondAxeDmg = config.getInt("thrownAxeDamage.diamond");
+		
+		scrollLevitationDisabled = config.getBoolean("scroll.levitation.disabled");
+		scrollJumpDisabled = config.getBoolean("scroll.jump.disabled");
+		scrollGrowthDisabled = config.getBoolean("scroll.growth.disabled");
+		scrollWaterwalkDisabled = config.getBoolean("scroll.waterwalk.disabled");
+		scrollRespirationDisabled = config.getBoolean("scroll.respiration.disabled");
+		scrollShieldDisabled = config.getBoolean("scroll.shield.disabled");
+		scrollNightvisionDisabled = config.getBoolean("scroll.nightvision.disabled");
+		scrollAttackDisabled = config.getBoolean("scroll.attack.disabled");
+		scrollPoisonDisabled = config.getBoolean("scroll.poison.disabled");
+		scrollReflectionDisabled = config.getBoolean("scroll.reflection.disabled");
+		scrollCommandDisabled = config.getBoolean("scroll.command.disabled");
+		scrollRebirthDisabled = config.getBoolean("scroll.rebirth.disabled");
+		scrollHealDisabled = config.getBoolean("scroll.heal.disabled");
+		scrollFireballDisabled = config.getBoolean("scroll.fireball.disabled");
+		scrollRecallDisabled = config.getBoolean("scroll.recall.disabled");
+		boundDisabled = config.getBoolean("scroll.bound.disabled");
+		throwAxeDisabled = config.getBoolean("thrownAxeDamage.disabled");
 	}
 	
 }

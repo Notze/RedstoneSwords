@@ -40,30 +40,50 @@ sword:
 
 scroll:
   levitation:
+    disabled: false
     duration: 10
     speed: 0.04
   jump:
+    disabled: false
     duration: 10
   growth:
+    disabled: false
     range: 4
   waterwalk:
+    disabled: false
     duration: 120
   respiration:
+    disabled: false
     duration: 120
   shield:
+    disabled: false
     duration: 30
   nightvision:
+    disabled: false
     duration: 120
   attack:
+    disabled: false
     duration: 15
     bonus: 5
   poison:
+    disabled: false
     duration: 30
   reflection:
+    disabled: false
     duration: 30
   command:
+    disabled: false
     duration: 600
+  rebirth:
+    disabled: false
+  heal:
+    disabled: false
+  fireball:
+    disabled: false
+  recall:
+    disabled: false
   bound:
+    disabled: false
     sword:
       duration: 60
     pickaxe:
@@ -77,6 +97,7 @@ scroll:
     
 # Damage dealt by a thrown Axe in half hearts
 thrownAxeDamage:
+  disabled: false
   wood: 7
   stone: 8
   iron: 9
