@@ -36,6 +36,7 @@ public final class Items{
 	public static String scrollNightVisionName = "Scroll of Night Eye";
 	public static String scrollReflectName = "Scroll of Reflection";
 	public static String scrollAttackName = "Scroll of Fortify Attack";
+	public static String scrollCraftName = "Scroll of Crafting";
 	// bound items
 	public static String scrollBoundSwordName = "Scroll of Bound Sword";
 	public static String scrollBoundPickaxeName = "Scroll of Bound Pickaxe";
@@ -90,6 +91,7 @@ public final class Items{
 		add(new Pair<String,Enchantment>(scrollBoundShovelName, Enchantment.PROTECTION_ENVIRONMENTAL));
 		add(new Pair<String,Enchantment>(scrollBoundAxeName, Enchantment.PROTECTION_EXPLOSIONS));
 		add(new Pair<String,Enchantment>(scrollBoundHoeName, Enchantment.PROTECTION_FALL));
+		add(new Pair<String,Enchantment>(scrollCraftName, Enchantment.PROTECTION_FIRE));
 	}};
 	
 	// Lores

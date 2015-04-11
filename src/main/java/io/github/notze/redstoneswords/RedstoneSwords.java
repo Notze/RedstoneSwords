@@ -24,7 +24,7 @@ public final class RedstoneSwords extends JavaPlugin {
 	scrollAttackDisabled, scrollPoisonDisabled, scrollReflectionDisabled, 
 	scrollCommandDisabled, boundDisabled, throwAxeDisabled, scrollRebirthDisabled, 
 	scrollHealDisabled, scrollFireballDisabled, scrollRecallDisabled, 
-	checkForUpdates, checkForBetaUpdates;
+	checkForUpdates, checkForBetaUpdates, scrollCraftingDisabled, scrollCraftingConsume;
 	public static float flightSpeed;
 	
 	@SuppressWarnings("unused")
@@ -116,6 +116,8 @@ public final class RedstoneSwords extends JavaPlugin {
 		scrollRecallDisabled = config.getBoolean("scroll.recall.disabled");
 		boundDisabled = config.getBoolean("scroll.bound.disabled");
 		throwAxeDisabled = config.getBoolean("thrownAxeDamage.disabled");
+		scrollCraftingDisabled = config.getBoolean("scroll.crafting.disabled"); 
+		scrollCraftingConsume = config.getBoolean("scroll.crafting.consume");
 		
 		checkForUpdates = config.getBoolean("updatechecker.enabled");
 		checkForBetaUpdates = config.getBoolean("updatechecker.includebeta");

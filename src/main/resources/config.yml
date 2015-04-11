@@ -82,6 +82,9 @@ scroll:
     disabled: false
   recall:
     disabled: false
+  crafting:
+    disabled: false
+    consume: false
   bound:
     disabled: false
     sword:

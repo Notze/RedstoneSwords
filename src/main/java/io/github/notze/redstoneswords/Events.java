@@ -594,6 +594,18 @@ public class Events implements Listener{
 	
 	@SuppressWarnings("deprecation")
 	private void scrolls(PlayerInteractEvent e){
+		// scroll of crafting
+		if(!RedstoneSwords.scrollCraftingDisabled){
+			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollCraftName))){
+				
+				if(RedstoneSwords.scrollCraftingConsume){
+					decreaseStack(player, handItem);
+					Particle.smoke.apply(player, 0.2, 100, 1);
+				}
+				player.openWorkbench(null, true);
+			}
+		}
+		
 		// scroll of respiration
 		if(!RedstoneSwords.scrollRespirationDisabled){
 			if(Utilities.scrollsEqual(handItem, Items.getScroll(Items.scrollRespirationName))){

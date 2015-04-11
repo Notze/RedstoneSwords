@@ -57,6 +57,7 @@ public class Crafting implements Listener {
 			add(new Pair<String,Material>(Items.scrollBoundShovelName, Material.GOLD_SPADE));
 			add(new Pair<String,Material>(Items.scrollBoundAxeName, Material.GOLD_AXE));
 			add(new Pair<String,Material>(Items.scrollBoundHoeName, Material.GOLD_HOE));
+			add(new Pair<String,Material>(Items.scrollCraftName, Material.WORKBENCH));
 		}};
 		
 		for(Pair<String,Material> scroll : scrolls){
