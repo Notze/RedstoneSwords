@@ -1,6 +1,6 @@
 name: RedstoneSwords
 main: io.github.notze.redstoneswords.RedstoneSwords
-version: 0.1
+version: 0.4
 
 commands:
   rshelp:

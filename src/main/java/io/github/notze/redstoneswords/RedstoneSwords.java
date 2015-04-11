@@ -23,7 +23,8 @@ public final class RedstoneSwords extends JavaPlugin {
 	scrollRespirationDisabled, scrollShieldDisabled, scrollNightvisionDisabled, 
 	scrollAttackDisabled, scrollPoisonDisabled, scrollReflectionDisabled, 
 	scrollCommandDisabled, boundDisabled, throwAxeDisabled, scrollRebirthDisabled, 
-	scrollHealDisabled, scrollFireballDisabled, scrollRecallDisabled;
+	scrollHealDisabled, scrollFireballDisabled, scrollRecallDisabled, 
+	checkForUpdates, checkForBetaUpdates;
 	public static float flightSpeed;
 	
 	@SuppressWarnings("unused")
@@ -35,10 +36,12 @@ public final class RedstoneSwords extends JavaPlugin {
 		Events events = new Events(this);
 		Repair repair = new Repair(this);
 		Smelting smelting = new Smelting(this);
+		UpdateChecker updateChecker = new UpdateChecker(this);
 		
 		getServer().getPluginManager().registerEvents(repair, this); // repair comes first
 		getServer().getPluginManager().registerEvents(crafting, this); // special recipes override repairs
 		getServer().getPluginManager().registerEvents(events, this); 
+		getServer().getPluginManager().registerEvents(updateChecker, this); // for joining players
 	
 		// main commands
 		this.getCommand("rshelp").setExecutor(new RedstoneSwordsCommandExecutor(this));
@@ -47,6 +50,9 @@ public final class RedstoneSwords extends JavaPlugin {
 		// Bonus commands
 		this.getCommand("rsclearinventory").setExecutor(new RedstoneSwordsCommandExecutor(this));
 		this.getCommand("rsstoreinventory").setExecutor(new RedstoneSwordsCommandExecutor(this));
+		
+		// Update Checker
+		updateChecker.execute();
 	}
 	
 	@Override
@@ -110,6 +116,9 @@ public final class RedstoneSwords extends JavaPlugin {
 		scrollRecallDisabled = config.getBoolean("scroll.recall.disabled");
 		boundDisabled = config.getBoolean("scroll.bound.disabled");
 		throwAxeDisabled = config.getBoolean("thrownAxeDamage.disabled");
+		
+		checkForUpdates = config.getBoolean("updatechecker.enabled");
+		checkForBetaUpdates = config.getBoolean("updatechecker.includebeta");
 	}
 	
 }
