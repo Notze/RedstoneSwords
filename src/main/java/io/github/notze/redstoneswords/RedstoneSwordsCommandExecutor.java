@@ -1,5 +1,6 @@
 package io.github.notze.redstoneswords;
 
+import io.github.notze.util.Items;
 import io.github.notze.util.Utilities;
 
 import org.bukkit.Location;
@@ -26,6 +27,17 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (cmd.getName().equalsIgnoreCase("rsadmininventory")){
+			if (!(sender instanceof Player)){
+				sender.sendMessage("This command can only be run by a player.");
+				return true;
+			}else{
+				Player player = (Player) sender;
+				player.openInventory(Items.getAdminInventory());
+				return true;
+			}
+		}
+		
 		if (cmd.getName().equalsIgnoreCase("rshelp")){
 			sender.sendMessage("You can use the following commands:\n"
 					//TODO update it

@@ -7,8 +7,10 @@ import java.util.List;
 
 import javafx.util.Pair;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -76,27 +78,27 @@ public final class Items{
 	// Scroll identification
 	@SuppressWarnings("serial")
 	static List<Pair<String,Enchantment>> scrolls = new ArrayList<Pair<String,Enchantment>>(){{
-		add(new Pair<String,Enchantment>(scrollFireballName, Enchantment.ARROW_DAMAGE));
-		add(new Pair<String,Enchantment>(scrollCropName, Enchantment.ARROW_FIRE));
-		add(new Pair<String,Enchantment>(scrollLevitationName, Enchantment.ARROW_INFINITE));
-		add(new Pair<String,Enchantment>(scrollJumpName, Enchantment.ARROW_KNOCKBACK));
-		add(new Pair<String,Enchantment>(scrollRespirationName, Enchantment.DAMAGE_ALL));
-		add(new Pair<String,Enchantment>(scrollRebirthName, Enchantment.DAMAGE_ARTHROPODS));
-		add(new Pair<String,Enchantment>(scrollHealName, Enchantment.DAMAGE_UNDEAD));
-		add(new Pair<String,Enchantment>(scrollWaterName, Enchantment.DEPTH_STRIDER));
-		add(new Pair<String,Enchantment>(scrollRecallName, Enchantment.DIG_SPEED));
-		add(new Pair<String,Enchantment>(scrollShieldName, Enchantment.DURABILITY));
-		add(new Pair<String,Enchantment>(scrollBoundSwordName, Enchantment.FIRE_ASPECT));
-		add(new Pair<String,Enchantment>(scrollCommandName, Enchantment.KNOCKBACK));
-		add(new Pair<String,Enchantment>(scrollPoisonName, Enchantment.LOOT_BONUS_BLOCKS));
-		add(new Pair<String,Enchantment>(scrollNightVisionName, Enchantment.LOOT_BONUS_MOBS));
-		add(new Pair<String,Enchantment>(scrollReflectName, Enchantment.LUCK));
 		add(new Pair<String,Enchantment>(scrollAttackName, Enchantment.LURE));
+		add(new Pair<String,Enchantment>(scrollCraftName, Enchantment.PROTECTION_FIRE));
 		add(new Pair<String,Enchantment>(scrollBoundPickaxeName, Enchantment.OXYGEN));
 		add(new Pair<String,Enchantment>(scrollBoundShovelName, Enchantment.PROTECTION_ENVIRONMENTAL));
 		add(new Pair<String,Enchantment>(scrollBoundAxeName, Enchantment.PROTECTION_EXPLOSIONS));
 		add(new Pair<String,Enchantment>(scrollBoundHoeName, Enchantment.PROTECTION_FALL));
-		add(new Pair<String,Enchantment>(scrollCraftName, Enchantment.PROTECTION_FIRE));
+		add(new Pair<String,Enchantment>(scrollBoundSwordName, Enchantment.FIRE_ASPECT));
+		add(new Pair<String,Enchantment>(scrollCommandName, Enchantment.KNOCKBACK));
+		add(new Pair<String,Enchantment>(scrollFireballName, Enchantment.ARROW_DAMAGE));
+		add(new Pair<String,Enchantment>(scrollCropName, Enchantment.ARROW_FIRE));
+		add(new Pair<String,Enchantment>(scrollHealName, Enchantment.DAMAGE_UNDEAD));
+		add(new Pair<String,Enchantment>(scrollJumpName, Enchantment.ARROW_KNOCKBACK));
+		add(new Pair<String,Enchantment>(scrollLevitationName, Enchantment.ARROW_INFINITE));
+		add(new Pair<String,Enchantment>(scrollNightVisionName, Enchantment.LOOT_BONUS_MOBS));
+		add(new Pair<String,Enchantment>(scrollPoisonName, Enchantment.LOOT_BONUS_BLOCKS));
+		add(new Pair<String,Enchantment>(scrollReflectName, Enchantment.LUCK));		
+		add(new Pair<String,Enchantment>(scrollRespirationName, Enchantment.DAMAGE_ALL));
+		add(new Pair<String,Enchantment>(scrollRebirthName, Enchantment.DAMAGE_ARTHROPODS));
+		add(new Pair<String,Enchantment>(scrollRecallName, Enchantment.DIG_SPEED));
+		add(new Pair<String,Enchantment>(scrollShieldName, Enchantment.DURABILITY));
+		add(new Pair<String,Enchantment>(scrollWaterName, Enchantment.DEPTH_STRIDER));
 	}};
 	
 	// Lores
@@ -124,6 +126,25 @@ public final class Items{
 		add(modeLore); // always last item
 	}};
 	public static int loreLength = lores.size();
+	
+	/**
+	 * Returns an inventory with all items of this mod.
+	 * 
+	 * @return
+	 * 		Inventory
+	 */
+	public static Inventory getAdminInventory(){
+		Inventory inv = Bukkit.createInventory(null, 27);
+		
+		inv.addItem(getInitSword());
+		for(Pair<String,Enchantment> scroll : scrolls){
+			inv.addItem( 
+				getScroll(scroll.getKey())	
+			);
+		}
+		
+		return inv;
+	}
 	
 	/**
 	 * Returns the Scroll matching the give name
