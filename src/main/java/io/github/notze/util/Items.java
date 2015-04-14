@@ -18,6 +18,11 @@ public final class Items{
 	// Materials
 	public static Material swordMaterial = RedstoneSwords.swordMaterial;
 	public static Material scrollMaterial = Material.PAPER;
+	public static Material boundSwordMaterial = Material.GOLD_SWORD;
+	public static Material boundPickMaterial = Material.GOLD_PICKAXE;
+	public static Material boundShovelMaterial = Material.GOLD_SPADE;
+	public static Material boundAxeMaterial = Material.GOLD_AXE;
+	public static Material boundHoeMaterial = Material.GOLD_HOE;
 	
 	// Names
 	public static String swordName = "Redstone Sword";
@@ -192,53 +197,61 @@ public final class Items{
 		ItemMeta im;
 		switch(item){
 		case sword:
-			boundItem = new ItemStack(Material.GOLD_SWORD);
+			boundItem = new ItemStack(boundSwordMaterial);
 			im = boundItem.getItemMeta();
 			
 			im.addEnchant(Enchantment.DAMAGE_ALL, 5, false);
 			im.addEnchant(Enchantment.LOOT_BONUS_MOBS, 3, false);
+			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
 			im.setDisplayName(boundSwordName);
 			boundItem.setItemMeta(im);
 			
 			return boundItem;
 		case pick:
-			boundItem = new ItemStack(Material.GOLD_PICKAXE);
+			boundItem = new ItemStack(boundPickMaterial);
 			im = boundItem.getItemMeta();
 			
-			im.addEnchant(Enchantment.DIG_SPEED, 5, false);
-			im.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, false);
+			im.addEnchant(Enchantment.DIG_SPEED, 0, true);
+			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
 			im.setDisplayName(boundPickaxeName);
 			boundItem.setItemMeta(im);
 			
 			return boundItem;
 		case shovel:
-			boundItem = new ItemStack(Material.GOLD_SPADE);
+			boundItem = new ItemStack(boundShovelMaterial);
 			im = boundItem.getItemMeta();
 			
-			im.addEnchant(Enchantment.DIG_SPEED, 5, false);
-			im.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, false);
+			im.addEnchant(Enchantment.DIG_SPEED, 0, true);
+			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
 			im.setDisplayName(boundShovelName);
 			boundItem.setItemMeta(im);
 			
 			return boundItem;
 		case axe:
-			boundItem = new ItemStack(Material.GOLD_AXE);
+			boundItem = new ItemStack(boundAxeMaterial);
 			im = boundItem.getItemMeta();
 			
-			im.addEnchant(Enchantment.DIG_SPEED, 5, false);
-			im.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, false);
+			im.addEnchant(Enchantment.DIG_SPEED, 0, true);
+			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
 			im.setDisplayName(boundAxeName);
 			boundItem.setItemMeta(im);
 			
 			return boundItem;
 		case hoe:
-			boundItem = new ItemStack(Material.GOLD_HOE);
+			boundItem = new ItemStack(boundHoeMaterial);
 			im = boundItem.getItemMeta();
 			
+			im.addEnchant(Enchantment.DURABILITY, 3, true);
+			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			im.setLore(new ArrayList<String>(){{add("This is a bound tool!");}});
 			im.setDisplayName(boundHoeName);
 			boundItem.setItemMeta(im);

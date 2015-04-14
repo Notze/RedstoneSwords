@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -155,6 +156,7 @@ public class Events implements Listener{
 		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 			
 			consumeRedstoneOre(e);
+			boundHoe(e);
 			
 		}else if(e.getAction().equals(Action.RIGHT_CLICK_AIR)){
 			
@@ -204,6 +206,7 @@ public class Events implements Listener{
 			
 			torch(e);
 			unbreakableBoundItems(e);
+			boundSword(e);
 			
 		}
 	}
@@ -317,6 +320,24 @@ public class Events implements Listener{
 		handItem = player.getItemInHand();
 		
 		unbreakableBoundItems(e);
+		boundShovelPick(e);
+		boundAxe(e);
+		
+	}
+	
+	/**
+	 * Remove bound Items when a player logged out with one in his inventory.
+	 * 
+	 * @param e
+	 * 		PlayerJoinEvent
+	 */
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e){
+		player = e.getPlayer();
+		Inventory inv = player.getInventory();
+		for(ItemStack item : inv.getContents())
+			if(Utilities.isBoundItem(item))
+				inv.remove(item);
 	}
 	
 	/**
@@ -344,6 +365,125 @@ public class Events implements Listener{
 		if(Utilities.isBoundItem(handItem)){
 			handItem.setDurability((short) -1);
 			player.updateInventory();
+		}
+	}
+	
+	/**
+	 * Break a bunch of blocks at once.
+	 * 
+	 * @param e
+	 * 		BlockBreakEvent
+	 */
+	public void boundShovelPick(BlockBreakEvent e){
+		if((handItem.getType().equals(Items.boundPickMaterial) 
+				|| handItem.getType().equals(Items.boundShovelMaterial) )
+				&& Utilities.isBoundItem(handItem)){
+			
+			Block brokenBlock = e.getBlock();
+			Material bbType = brokenBlock.getType();
+			
+			//3x3x3 cube of blocks
+			for(int i=-1; i<=1; i++)
+				for(int j=-1; j<=1; j++)
+					for(int k=-1; k<=1; k++){
+						
+						Block b = brokenBlock.getRelative(i, j, k);
+						if(b.getType().equals(bbType))
+							b.breakNaturally(handItem);
+					}
+		}
+	}
+	
+	/**
+	 * Fells a whole tree.
+	 * 
+	 * @param e
+	 * 		BlockBreakEvent
+	 */
+	public void boundAxe(BlockBreakEvent e){
+		if(handItem.getType().equals(Items.boundAxeMaterial)
+				&& Utilities.isBoundItem(handItem)){
+			if(e.getBlock().getType().equals(Material.LOG))
+				fellTree(e.getBlock());
+		}
+	}
+
+	/**
+	 * Breaks Logs recursively and blow leaves.
+	 * 
+	 * @param b
+	 * 		block
+	 */
+	private void fellTree(Block b){
+		if(b.getType().equals(Material.LEAVES))
+			blowLeef(b, 2);
+		else if(b.getType().equals(Material.LOG)){
+			b.breakNaturally(handItem);
+			for(int i=-1; i<=1; i++)
+				for(int j=0; j<=1; j++)
+					for(int k=-1; k<=1; k++)
+						fellTree(b.getRelative(i, j, k));
+		}
+	}
+	
+	/**
+	 * Only break leave blocks recursively.
+	 * 
+	 * @param b
+	 * 		Block
+	 */
+	private void blowLeef(Block b, int depth){
+		if(depth <= 0)
+			return;
+		if(b.getType().equals(Material.LEAVES)){
+			b.breakNaturally(handItem);
+			for(int i=-1; i<=1; i++)
+				for(int j=0; j<=1; j++)
+					for(int k=-1; k<=1; k++)
+						blowLeef(b.getRelative(i, j, k), depth-1);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param e
+	 * 		EntityDamageByEntityEvent
+	 */
+	public void boundSword(EntityDamageByEntityEvent e){
+		if(handItem.getType().equals(Items.boundSwordMaterial)
+				&& Utilities.isBoundItem(handItem)){
+			// TODO
+		}
+	}
+	
+	/**
+	 * Hoes a large area.
+	 * 
+	 * @param e
+	 * 		PlayerInteractEvent
+	 */
+	@SuppressWarnings("deprecation")
+	public void boundHoe(PlayerInteractEvent e){
+		if(handItem.getType().equals(Items.boundHoeMaterial)
+				&& Utilities.isBoundItem(handItem)){
+			
+			Block clickedBlock = e.getClickedBlock();
+			int cbX = clickedBlock.getX();
+			int cbY = clickedBlock.getY();
+			int cbZ = clickedBlock.getZ();
+			
+			//9x9 field
+			for(int i=-4; i<=4; i++)
+				for(int j=-4; j<=4; j++){
+					Block b = player.getWorld().getBlockAt(
+							cbX + i, 
+							cbY, 
+							cbZ + j);
+					if(b.getTypeId() == 3 // dirt
+							|| b.getTypeId() == 2) // grassblock
+						b.setTypeId(60); // farmland
+				}
+			
 		}
 	}
 	

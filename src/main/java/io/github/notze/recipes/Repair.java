@@ -29,6 +29,11 @@ public class Repair implements Listener{
 		put(Material.WOOD_SPADE, Material.LOG);
 		put(Material.WOOD_AXE, Material.LOG);
 		put(Material.WOOD_HOE, Material.LOG);
+		put(Material.STONE_SWORD, Material.COBBLESTONE);
+		put(Material.STONE_PICKAXE, Material.COBBLESTONE);
+		put(Material.STONE_SPADE, Material.COBBLESTONE);
+		put(Material.STONE_AXE, Material.COBBLESTONE);
+		put(Material.STONE_HOE, Material.COBBLESTONE);
 		put(Material.LEATHER_HELMET, Material.LEATHER);
 		put(Material.LEATHER_CHESTPLATE, Material.LEATHER);
 		put(Material.LEATHER_LEGGINGS, Material.LEATHER);

@@ -92,7 +92,7 @@ scroll:
     pickaxe:
       duration: 60
     shovel:
-      duration: 60
+      duration: 20
     axe:
       duration: 60
     hoe:
