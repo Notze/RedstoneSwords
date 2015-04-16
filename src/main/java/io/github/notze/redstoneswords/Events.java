@@ -61,6 +61,9 @@ public class Events implements Listener{
 	static List<Player> reflection = new ArrayList<Player>(); // reflection
 	static List<Pair<Player,Monster>> commands = new ArrayList<Pair<Player,Monster>>(); // command
 	
+	// auto repair
+	ItemStack rep;
+	
 	// the player
 	Player player = null;
 	
@@ -261,7 +264,7 @@ public class Events implements Listener{
 		player = e.getPlayer();
 		handItem = player.getItemInHand();
 		
-		Utilities.destroyRedstoneSword(player, handItem);
+		autoRepair(e);
 	}
 	
 	/**
@@ -338,6 +341,35 @@ public class Events implements Listener{
 		for(ItemStack item : inv.getContents())
 			if(Utilities.isBoundItem(item))
 				inv.remove(item);
+	}
+	
+	/**
+	 * Automatically repairs the redstone sword.
+	 * 
+	 * @param e
+	 * 		PlayerItemBreakEvent
+	 */
+	public void autoRepair(PlayerItemBreakEvent e){
+		redstoneSwords.getLogger().info("itembreak event");
+		if(Utilities.isRedstoneSword(handItem)){
+			if(player.getInventory().contains(Material.IRON_INGOT)){
+				rep = e.getBrokenItem().clone();
+				rep.setDurability((short) 0);
+				rep.setAmount(1);
+				redstoneSwords.getLogger().info("durabilitie restored");
+				
+				decreaseStack(player, new ItemStack(Material.IRON_INGOT));
+				
+				new BukkitRunnable(){
+					public void run(){
+						player.setItemInHand(rep);
+						redstoneSwords.getLogger().info("item set");
+					}
+				}.runTaskLater(redstoneSwords, 1);
+			}else{
+				Utilities.destroyRedstoneSword(player, handItem);
+			}
+		}
 	}
 	
 	/**

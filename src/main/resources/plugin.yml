@@ -27,4 +27,4 @@ commands:
     description: Opens an inventory containing all items from this mod
     usage: Usage /rsadmininventory
     permission: redstoneSwords.admin
-    permission-message: You don't have permission <redstoneSwords.admin>
+    permission-message: You don't have permission <cheat.redstoneSwords>
