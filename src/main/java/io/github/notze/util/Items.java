@@ -138,9 +138,9 @@ public final class Items{
 		
 		inv.addItem(getInitSword());
 		for(Pair<String,Enchantment> scroll : scrolls){
-			inv.addItem( 
-				getScroll(scroll.getKey())	
-			);
+			ItemStack item = getScroll(scroll.getKey());
+			item.setAmount(64);
+			inv.addItem(item);
 		}
 		
 		return inv;
