@@ -18,7 +18,9 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
@@ -41,6 +43,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -520,7 +523,7 @@ public class Events implements Listener{
 	}
 	
 	/**
-	 * sets the target for your minions.
+	 * sets the target for your minions when you get hit.
 	 * 
 	 * @param e
 	 * 		EntityDamageEvent
@@ -668,6 +671,7 @@ public class Events implements Listener{
 					Particle.smoke.apply(player, 0.2, 100, 1);
 					
 					// make sure player doesn't get attacked
+					// and let minions follow
 					new BukkitRunnable(){
 						public void run(){
 							if(commandTimer <= 0 || monster.isDead()){
@@ -681,6 +685,26 @@ public class Events implements Listener{
 							
 							Particle.instantSpell.apply(monster, 0.1, 10, 1);
 							commandTimer--;
+							
+							// following minions
+							//TODO call function
+//								        Entity pett = ((CraftEntity) monster).getHandle();
+//								        ((EntityInsentient) monster).getNavigation().a(2);
+//								        Object petf = ((CraftEntity) pet).getHandle();
+//								        Location targetLocation = player.getLocation();
+//								        PathEntity path;
+//								        path = ((EntityInsentient) petf).getNavigation().a(targetLocation.getX() + 1, targetLocation.getY(), targetLocation.getZ() + 1);
+//								        if (path != null) {
+//									        ((EntityInsentient) petf).getNavigation().a(path, 1.0D);
+//									        ((EntityInsentient) petf).getNavigation().a(2.0D);
+//								        }
+//								        int distance = (int) Bukkit.getPlayer(player.getName()).getLocation().distance(pet.getLocation());
+//								        if (distance > 10 && !pet.isDead() && player.isOnGround()) {
+//								        	pet.teleport(player.getLocation());
+//								        }
+//								        AttributeInstance attributes = ((EntityInsentient)((CraftEntity)pet).getHandle()).getAttributeInstance(GenericAttributes.d);
+//								        attributes.setValue(speed);
+							// end todo
 						}
 					}.runTaskTimer(redstoneSwords, 0, 1);
 				}
@@ -1123,8 +1147,6 @@ public class Events implements Listener{
         if(total<need) return level;
         return toLevel(total-need, level+1);
     }
-	
-	
 	
 	
 }

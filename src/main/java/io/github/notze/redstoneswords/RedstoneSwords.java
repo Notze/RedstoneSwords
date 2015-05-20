@@ -10,6 +10,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RedstoneSwords extends JavaPlugin {
 
+	static RedstoneSwords instance;
+	
 	static FileConfiguration config;
 	public static Material swordMaterial;
 	public static int boostCost, teleportCost, redstoneOreAmount, speedBoost, 
@@ -30,8 +32,10 @@ public final class RedstoneSwords extends JavaPlugin {
 	@SuppressWarnings("unused")
 	@Override
 	public void onEnable() {
+		instance = this;
 		initialiseConfig(); // should be ALWAYS the first here
 		
+		RedstoneSwordsCommandExecutor executor = new RedstoneSwordsCommandExecutor(this);
 		Crafting crafting = new Crafting(this);
 		Events events = new Events(this);
 		Repair repair = new Repair(this);
@@ -43,16 +47,19 @@ public final class RedstoneSwords extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(events, this); 
 		getServer().getPluginManager().registerEvents(updateChecker, this); // for joining players
 	
+		// test command
+		this.getCommand("rstest").setExecutor(executor);
+		
 		// main commands
-		this.getCommand("rshelp").setExecutor(new RedstoneSwordsCommandExecutor(this));
-		this.getCommand("rs").setExecutor(new RedstoneSwordsCommandExecutor(this));
+		this.getCommand("rshelp").setExecutor(executor);
+		this.getCommand("rs").setExecutor(executor);
 		
 		// Bonus commands
-		this.getCommand("rsclearinventory").setExecutor(new RedstoneSwordsCommandExecutor(this));
-		this.getCommand("rsstoreinventory").setExecutor(new RedstoneSwordsCommandExecutor(this));
+		this.getCommand("rsclearinventory").setExecutor(executor);
+		this.getCommand("rsstoreinventory").setExecutor(executor);
 		
 		// Cheat/Admin Commands
-		this.getCommand("rsadmininventory").setExecutor(new RedstoneSwordsCommandExecutor(this));
+		this.getCommand("rsadmininventory").setExecutor(executor);
 		
 		// Update Checker
 		updateChecker.execute();

@@ -1,8 +1,13 @@
 name: RedstoneSwords
 main: io.github.notze.redstoneswords.RedstoneSwords
-version: 0.4.2
+version: 0.5
 
 commands:
+  rstest:
+    description: does something i want to test
+    usage: Usage /rstest
+    permission: 
+    permission-message: 
   rshelp:
     description: Display help
     usage: Usage /rshelp

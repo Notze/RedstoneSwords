@@ -27,6 +27,17 @@ public class RedstoneSwordsCommandExecutor implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (cmd.getName().equalsIgnoreCase("rstest")){
+			if (!(sender instanceof Player)){
+				sender.sendMessage("This command can only be run by a player.");
+				return true;
+			}else{
+				Player player = (Player) sender;
+				Test.test(player);
+				return true;
+			}
+		}
+		
 		if (cmd.getName().equalsIgnoreCase("rsadmininventory")){
 			if (!(sender instanceof Player)){
 				sender.sendMessage("This command can only be run by a player.");
