@@ -1,7 +1,7 @@
 package io.github.notze.redstoneswords;
 
-import io.github.notze.util.Items;
-import io.github.notze.util.Utilities;
+import io.github.notze.redstoneswords.util.Items;
+import io.github.notze.redstoneswords.util.Utilities;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

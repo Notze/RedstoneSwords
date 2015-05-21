@@ -1,4 +1,4 @@
-package io.github.notze.util;
+package io.github.notze.redstoneswords.util;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;

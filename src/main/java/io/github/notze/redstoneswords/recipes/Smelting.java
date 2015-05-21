@@ -1,4 +1,4 @@
-package io.github.notze.recipes;
+package io.github.notze.redstoneswords.recipes;
 
 import io.github.notze.redstoneswords.RedstoneSwords;
 

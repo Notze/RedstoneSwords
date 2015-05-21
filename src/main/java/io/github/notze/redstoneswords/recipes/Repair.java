@@ -1,7 +1,7 @@
-package io.github.notze.recipes;
+package io.github.notze.redstoneswords.recipes;
 
 import io.github.notze.redstoneswords.RedstoneSwords;
-import io.github.notze.util.Utilities;
+import io.github.notze.redstoneswords.util.Utilities;
 
 import java.util.HashMap;
 import java.util.Iterator;

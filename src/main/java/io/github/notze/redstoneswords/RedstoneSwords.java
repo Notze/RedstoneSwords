@@ -1,8 +1,8 @@
 package io.github.notze.redstoneswords;
 
-import io.github.notze.recipes.Crafting;
-import io.github.notze.recipes.Repair;
-import io.github.notze.recipes.Smelting;
+import io.github.notze.redstoneswords.recipes.Crafting;
+import io.github.notze.redstoneswords.recipes.Repair;
+import io.github.notze.redstoneswords.recipes.Smelting;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

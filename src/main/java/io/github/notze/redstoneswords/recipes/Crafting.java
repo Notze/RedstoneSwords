@@ -1,12 +1,12 @@
-package io.github.notze.recipes;
+package io.github.notze.redstoneswords.recipes;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.util.Pair;
 import io.github.notze.redstoneswords.RedstoneSwords;
-import io.github.notze.util.Items;
-import io.github.notze.util.Utilities;
+import io.github.notze.redstoneswords.util.Items;
+import io.github.notze.redstoneswords.util.Utilities;
 
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
