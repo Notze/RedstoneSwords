@@ -1,0 +1,18 @@
+planned:
+ language support
+ restliche todos (s.b. bound sword)
+ add iron to redstonesword for repair instead of iron from inventory
+ repair deaktivieren können
+ waffen, werkzeuge, rüstung einschmelzen
+ max redstone/exp
+ -Scoreboard statt lore
+ scroll
+  shelter
+   
+ overhaul
+ feuerball: richtiges feuer, impact = schaden + brandt
+ scrolls with lores
+
+patchnotes v 0.4.2
+ new command /rsadmininventory
+ auto repair on redstone sword
